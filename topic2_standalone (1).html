@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2: Explore the Excel Interface</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --g1:#107c41;--g2:#185c37;--g3:#21a366;--g4:#33c481;--g5:#0d7239;
+  --gl:#e8f5ee;--gll:#f0faf4;--gb:#b2dfc5;
+  --bl:#e8f3fb;--bb:#b3d4f0;--al:#fff4e0;--ab:#f0c080;
+  --rl:#fde7e9;--rb:#f4b8be;--red:#c50f1f;
+  --td:#1b1b1b;--tm:#3d3d3d;--tl:#6e6e6e;
+  --w:#ffffff;--sf:#f3f3f3;
+  --fn:'Segoe UI','Segoe UI Web (West European)',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --r:4px;--rl2:8px;--ease:cubic-bezier(.4,0,.2,1);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fn);font-size:15px;line-height:1.6;color:var(--td);background:var(--sf);padding-bottom:40px;}
+.page{max-width:780px;margin:0 auto;animation:fadeUp .5s var(--ease) both;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--g2) 0%,var(--g1) 55%,var(--g5) 100%);padding:36px 36px 0;border-radius:var(--rl2) var(--rl2) 0 0;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hero::after{content:'';position:absolute;bottom:-50px;left:30px;width:200px;height:200px;border-radius:50%;background:rgba(51,196,129,.07);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;}
+.pill{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g4);background:rgba(51,196,129,.15);border:1px solid rgba(51,196,129,.3);padding:3px 10px;border-radius:99px;}
+.ediv{width:1px;height:12px;background:rgba(255,255,255,.2);}
+.etxt{font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.03em;}
+.hero h1{font-size:28px;font-weight:600;color:#fff;line-height:1.2;margin-bottom:10px;position:relative;letter-spacing:-.01em;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.7);max-width:540px;margin-bottom:28px;position:relative;}
+.stripe{height:4px;margin:0 -36px;background:linear-gradient(90deg,var(--g4),var(--g3),var(--g4));background-size:200% auto;animation:shimmer 3s linear infinite;}
+
+/* TOOLBAR */
+.toolbar{background:#fff;border:1px solid #e0e0e0;border-top:none;padding:12px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+.ctrl{font-family:var(--fn);font-size:12px;font-weight:600;padding:5px 14px;border-radius:var(--r);border:1.5px solid var(--gb);background:#fff;color:var(--g1);cursor:pointer;transition:.2s var(--ease);}
+.ctrl:hover{background:var(--gl);border-color:var(--g3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(16,124,65,.15);}
+.ctrl:active{transform:translateY(0);}
+.pw{flex:1;min-width:100px;}
+.pl{font-size:11px;color:var(--tl);margin-bottom:4px;display:flex;justify-content:space-between;}
+.pt{height:6px;background:#e8e8e8;border-radius:99px;overflow:hidden;}
+.pf{height:100%;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:99px;width:0%;transition:width .5s var(--ease);}
+.dbadge{display:none;align-items:center;gap:6px;background:var(--g1);color:#fff;font-size:12px;font-weight:700;letter-spacing:.03em;padding:5px 12px;border-radius:99px;}
+.dbadge.show{display:flex;animation:pop .4s var(--ease) both;}
+.dbadge svg{width:14px;height:14px;}
+
+/* ACCORDION */
+.alist{background:#fff;border:1px solid #e0e0e0;border-top:none;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+.aitem{border-top:1px solid #ebebeb;transition:box-shadow .2s;}
+.aitem:first-child{border-top:none;}
+.aitem.open{box-shadow:inset 3px 0 0 var(--g1);}
+.abtn{width:100%;display:flex;align-items:center;background:#fff;border:none;padding:0;cursor:pointer;text-align:left;transition:background .15s;}
+.abtn:hover{background:var(--gll);}
+.aitem.open .abtn{background:var(--gl);}
+.aicw{width:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:16px 0;align-self:stretch;}
+.aic{width:32px;height:32px;border-radius:var(--r);background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.25s var(--ease);}
+.aitem.open .aic{background:var(--g1);box-shadow:0 2px 10px rgba(16,124,65,.35);transform:scale(1.05);}
+.albl{flex:1;padding:14px 6px 14px 0;}
+.anum{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);display:block;margin-bottom:2px;}
+.aitem.open .anum{color:var(--g1);}
+.atitle{font-size:14px;font-weight:600;color:var(--td);display:block;line-height:1.3;}
+.asub{font-size:12px;color:var(--tl);display:block;margin-top:2px;}
+.acw{width:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.achev{width:24px;height:24px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--tl);transition:.25s var(--ease);}
+.aitem.open .achev{background:var(--g1);color:#fff;transform:rotate(180deg);}
+.abody{display:none;border-top:1px solid var(--gb);}
+.aitem.open .abody{display:block;animation:slideDown .25s var(--ease) both;}
+.ain{padding:20px 24px 22px 56px;font-size:14px;color:var(--tm);line-height:1.8;}
+.ain p{margin-bottom:12px;}.ain p:last-child{margin-bottom:0;}
+.ain ul{margin:8px 0 12px;padding-left:1.5em;}.ain li{margin-bottom:7px;}
+.ain strong{font-weight:600;color:var(--td);}.ain em{font-style:italic;}
+.kc{font-family:'Cascadia Code','Courier New',monospace;font-size:12.5px;font-weight:600;background:#f0f7f3;color:var(--g1);padding:1px 6px;border-radius:3px;border:1px solid var(--gb);}
+.callout{display:flex;gap:12px;padding:12px 14px;border-radius:var(--rl2);margin:14px 0;font-size:13px;line-height:1.65;}
+.callout:last-child{margin-bottom:0;}
+.ci{font-size:16px;flex-shrink:0;margin-top:1px;}.cb{flex:1;}
+.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}
+.tip{background:#edfaf3;border:1px solid #a8dfc0;}.tip .ct{color:var(--g1);}.tip .cb{color:#1a5c35;}
+.note{background:var(--bl);border:1px solid var(--bb);}.note .ct{color:#005a9e;}.note .cb{color:#003e6b;}
+.fun{background:var(--al);border:1px solid var(--ab);}.fun .ct{color:var(--red);}.fun .cb{color:#7a3800;}
+.rtbl{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;border-radius:var(--rl2);overflow:hidden;border:1px solid #e0e0e0;}
+.rtbl thead tr{background:var(--g2);}
+.rtbl th{color:#fff;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;padding:9px 14px;text-align:left;}
+.rtbl td{padding:8px 14px;border-bottom:1px solid #ebebeb;vertical-align:top;color:var(--tm);}
+.rtbl tr:last-child td{border-bottom:none;}
+.rtbl tbody tr:nth-child(even) td{background:#fafafa;}
+.rtbl tbody tr:hover td{background:var(--gll);}
+.rtbl .tn{font-weight:600;color:var(--g2);white-space:nowrap;}
+
+/* QUIZ */
+.qwrap{background:#fff;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 var(--rl2) var(--rl2);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+.qhdr{background:linear-gradient(135deg,var(--g2),var(--g1));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+.qhdr-ic{width:40px;height:40px;border-radius:var(--r);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.qhdr-txt h2{font-size:16px;font-weight:600;color:#fff;margin-bottom:2px;}
+.qhdr-txt p{font-size:13px;color:rgba(255,255,255,.7);}
+.qpbar{height:3px;background:linear-gradient(90deg,var(--g4),var(--g3));background-size:200% auto;animation:shimmer 3s linear infinite;transition:width .4s var(--ease);}
+.qbody{padding:28px 28px 24px;}
+.qctr{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:10px;}
+.qtxt{font-size:16px;font-weight:600;color:var(--td);line-height:1.4;margin-bottom:20px;}
+.opts{display:flex;flex-direction:column;gap:10px;}
+.obtn{font-family:var(--fn);font-size:14px;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--rl2);border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;text-align:left;transition:.2s var(--ease);color:var(--td);}
+.obtn:hover:not(:disabled){border-color:var(--g3);background:var(--gll);transform:translateX(3px);}
+.obtn:disabled{cursor:default;transform:none;}
+.obtn.correct{border-color:var(--g1);background:#edfaf3;color:#1a5c35;animation:pop .3s var(--ease) both;}
+.obtn.wrong{border-color:var(--red);background:var(--rl);color:var(--red);}
+.oltr{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--tl);transition:.2s var(--ease);}
+.obtn.correct .oltr{background:var(--g1);color:#fff;}
+.obtn.wrong .oltr{background:var(--red);color:#fff;}
+.obtn.missed .oltr{background:var(--g1);color:#fff;}
+.obtn.missed{border-color:var(--g1);background:#edfaf3;color:#1a5c35;opacity:.7;}
+.fb{display:none;margin-top:16px;padding:12px 14px;border-radius:var(--rl2);font-size:13px;line-height:1.6;gap:10px;}
+.fb.show{display:flex;animation:slideDown .25s var(--ease) both;}
+.fb.fbc{background:#edfaf3;border:1px solid #a8dfc0;color:#1a5c35;}
+.fb.fbw{background:var(--rl);border:1px solid var(--rb);color:var(--red);}
+.fbi{font-size:16px;flex-shrink:0;}.fbm{flex:1;}
+.fbt{font-weight:700;margin-bottom:2px;}
+.qnav{margin-top:20px;display:flex;justify-content:flex-end;}
+.nbtn{font-family:var(--fn);font-size:13px;font-weight:600;padding:8px 20px;border-radius:var(--r);border:none;background:var(--g1);color:#fff;cursor:pointer;display:none;transition:.2s var(--ease);letter-spacing:.02em;}
+.nbtn:hover{background:var(--g3);transform:translateY(-1px);box-shadow:0 3px 10px rgba(16,124,65,.3);}
+.nbtn:active{transform:translateY(0);}
+.nbtn.show{display:block;animation:fadeUp .3s var(--ease) both;}
+
+/* SCORE */
+.sscreen{display:none;padding:32px 28px;text-align:center;}
+.sscreen.show{display:block;animation:fadeUp .4s var(--ease) both;}
+.scirc{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 6px 24px rgba(16,124,65,.3);animation:pop .5s var(--ease) both;}
+.snum{font-size:32px;font-weight:700;color:#fff;line-height:1;}
+.sdenom{font-size:13px;color:rgba(255,255,255,.8);margin-top:2px;}
+.stitle{font-size:20px;font-weight:600;color:var(--td);margin-bottom:8px;}
+.ssub{font-size:14px;color:var(--tl);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;}
+.rbtn{font-family:var(--fn);font-size:13px;font-weight:600;padding:9px 24px;border-radius:var(--r);border:1.5px solid var(--gb);background:#fff;color:var(--g1);cursor:pointer;transition:.2s var(--ease);}
+.rbtn:hover{background:var(--gl);border-color:var(--g3);}
+.sbd{text-align:left;margin:20px 0;}
+.sbi{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #ebebeb;font-size:13px;color:var(--tm);}
+.sbi:last-child{border-bottom:none;}
+.sbic{font-size:15px;flex-shrink:0;margin-top:1px;}.sbq{flex:1;line-height:1.5;}
+.sbq strong{display:block;color:var(--td);margin-bottom:2px;}
+
+/* FOOTER */
+.footer{background:var(--g2);padding:14px 24px;display:flex;align-items:center;border-radius:0 0 var(--rl2) var(--rl2);margin-top:-1px;}
+.flogo{width:28px;height:28px;border-radius:var(--r);background:var(--g4);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--g2);margin-right:10px;}
+.ftxt{font-size:12px;color:rgba(255,255,255,.6);}
+.ftxt strong{color:rgba(255,255,255,.9);font-weight:600;}
+
+@media(max-width:600px){
+  .hero{padding:24px 20px 0;}.stripe{margin:0 -20px;}
+  .ain,.qbody,.sscreen{padding-left:16px;padding-right:16px;}
+  .ain{padding-left:16px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="eyebrow">
+    <span class="pill">Unit 1</span><span class="ediv"></span>
+    <span class="etxt">Business Excel &nbsp;&middot;&nbsp; Excel Associate</span>
+  </div>
+  <h1>Topic 2: Explore the Excel Interface</h1>
+  <p class="hero-sub">Get comfortable with Excel&rsquo;s layout, terminology, and navigation before building your first workbook.</p>
+  <div class="stripe"></div>
+</div>
+
+<div class="toolbar">
+  <button class="ctrl" id="bex">Expand all</button>
+  <button class="ctrl" id="bcl">Collapse all</button>
+  <div class="pw">
+    <div class="pl"><span id="ptxt">0 of 5 sections read</span><span id="ppct">0%</span></div>
+    <div class="pt"><div class="pf" id="pfill"></div></div>
+  </div>
+  <div class="dbadge" id="dbadge">
+    <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="white" fill-opacity="0.2"/><path d="M4.5 8.5L6.5 10.5L11.5 5.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Complete!
+  </div>
+</div>
+
+<div class="alist">
+  <div class="aitem" id="ai0">
+    <button class="abtn" data-i="0"><div class="aicw"><div class="aic">&#128196;</div></div><div class="albl"><span class="anum">Section 01</span><span class="atitle">Opening Excel &amp; the startup screen</span><span class="asub">Your first look at the application</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>When you open Excel for the first time, you are prompted with a menu to either <strong>create a new file</strong> or <strong>open an existing file</strong>. Once a workbook &mdash; even a blank one &mdash; is open, the full application interface activates.</p>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">Good to know</div>Excel files are called <strong>workbooks</strong>. Each workbook contains one or more <strong>worksheets</strong> (the individual tabs at the bottom). Don&rsquo;t mix these up &mdash; they come up constantly.</div></div>
+    </div></div>
+  </div>
+  <div class="aitem" id="ai1">
+    <button class="abtn" data-i="1"><div class="aicw"><div class="aic">&#127381;</div></div><div class="albl"><span class="anum">Section 02</span><span class="atitle">The ribbon and its tabs</span><span class="asub">Where all commands live</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>At the top of the application is the <strong>ribbon</strong> &mdash; a bar holding several tabs. Each tab groups related commands. The tab name hints at what&rsquo;s inside.</p>
+      <table class="rtbl"><thead><tr><th>Tab</th><th>What you&rsquo;ll find there</th></tr></thead><tbody>
+        <tr><td class="tn">File</td><td>Opens <strong>Backstage view</strong> &mdash; manage settings, save, print, export</td></tr>
+        <tr><td class="tn">Home</td><td>Most-used tools: clipboard, font, alignment, number formatting</td></tr>
+        <tr><td class="tn">Insert</td><td>Add objects: pictures, icons, charts, SmartArt</td></tr>
+        <tr><td class="tn">Page Layout</td><td>Themes, page setup, and sheet display options</td></tr>
+        <tr><td class="tn">Formulas</td><td>Create functions, define names, audit formulas</td></tr>
+        <tr><td class="tn">Data</td><td>Import data, sort, filter, and use data tools</td></tr>
+        <tr><td class="tn">Review</td><td>Proofing, track changes, protection, accessibility</td></tr>
+        <tr><td class="tn">View</td><td>Manage views, zoom, arrange windows, macros</td></tr>
+        <tr><td class="tn">Help</td><td>Excel help, Microsoft support, learning resources</td></tr>
+      </tbody></table>
+      <div class="callout tip"><span class="ci">&#128161;</span><div class="cb"><div class="ct">Pattern to remember</div>When in doubt, look at the tab names first &mdash; they describe exactly what their tools do.</div></div>
+    </div></div>
+  </div>
+  <div class="aitem" id="ai2">
+    <button class="abtn" data-i="2"><div class="aicw"><div class="aic">&#127914;</div></div><div class="albl"><span class="anum">Section 03</span><span class="atitle">Backstage view &amp; ribbon display options</span><span class="asub">Managing what you see on screen</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>Clicking <strong>File</strong> opens the <strong>Backstage view</strong> &mdash; a full panel with New, Open, Save, Print, Share, Export. Think of it as <em>behind the curtain</em>. Press <span class="kc">Esc</span> or the back arrow to return.</p>
+      <p>Control ribbon visibility with <strong>Ribbon Display Options</strong> (upper-right of Title bar):</p>
+      <ul>
+        <li><strong>Auto-hide Ribbon</strong> &mdash; hides it entirely; press <span class="kc">Alt</span> to peek</li>
+        <li><strong>Show Tabs</strong> &mdash; tab names only; click a tab to see commands</li>
+        <li><strong>Show Tabs and Commands</strong> &mdash; the default; everything visible</li>
+      </ul>
+      <div class="callout note"><span class="ci">&#128276;</span><div class="cb"><div class="ct">Quick trick</div>Double-clicking any ribbon tab toggles it on and off &mdash; handy for more screen space.</div></div>
+    </div></div>
+  </div>
+  <div class="aitem" id="ai3">
+    <button class="abtn" data-i="3"><div class="aicw"><div class="aic">&#128269;</div></div><div class="albl"><span class="anum">Section 04</span><span class="atitle">Key interface elements to know</span><span class="asub">Name box, formula bar, status bar &amp; more</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>Once a workbook is open, these elements become active:</p>
+      <ul>
+        <li><strong>Quick Access Toolbar</strong> &mdash; upper-left, above ribbon. AutoSave, Save, Undo, Redo by default.</li>
+        <li><strong>Search / Tell Me</strong> &mdash; center of Title bar. Find commands or get help.</li>
+        <li><strong>Name Box</strong> &mdash; below ribbon on left. Shows selected cell address (e.g., <span class="kc">A1</span>).</li>
+        <li><strong>Formula Bar</strong> &mdash; next to Name Box. Shows cell contents or formula.</li>
+        <li><strong>Sheet tabs</strong> &mdash; bottom of screen. Click <strong>+</strong> to add a sheet.</li>
+        <li><strong>Scroll bars</strong> &mdash; vertical (right) and horizontal (bottom).</li>
+        <li><strong>View controls &amp; Zoom slider</strong> &mdash; bottom-right. Switch views; zoom in or out.</li>
+      </ul>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">Pro tip</div>Click the Name Box, type any cell address like <span class="kc">D47</span>, press Enter &mdash; jumps there instantly.</div></div>
+    </div></div>
+  </div>
+  <div class="aitem" id="ai4">
+    <button class="abtn" data-i="4"><div class="aicw"><div class="aic">&#10024;</div></div><div class="albl"><span class="anum">Section 05</span><span class="atitle">Bonus features &amp; hidden gems</span><span class="asub">Things most beginners don&rsquo;t know exist</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <ul>
+        <li><strong>Draw tab</strong> &mdash; Annotate with a digital pen, convert ink to shapes or math. Add via <em>File &rarr; Options &rarr; Customize Ribbon</em>.</li>
+        <li><strong>Minimize, Restore, Close</strong> &mdash; Standard window controls, upper-right corner.</li>
+        <li><strong>Display Settings</strong> &mdash; Three view icons at bottom-right, useful before printing.</li>
+      </ul>
+      <div class="callout fun"><span class="ci">&#11088;</span><div class="cb"><div class="ct">Fun fact</div>You can turn your cursor into a <strong>rainbow or galaxy pen</strong> on the Draw tab &mdash; a small delight in an otherwise very serious application.</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="qwrap">
+  <div class="qhdr">
+    <div class="qhdr-ic">&#9997;</div>
+    <div class="qhdr-txt"><h2>Check for Understanding</h2><p>5 questions &nbsp;&middot;&nbsp; Instant feedback &nbsp;&middot;&nbsp; Retake anytime</p></div>
+  </div>
+  <div class="qpbar" id="qpb" style="width:0%"></div>
+  <div class="qbody" id="qbody">
+    <div class="qctr" id="qctr">Question 1 of 5</div>
+    <div class="qtxt" id="qtxt"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"><span class="fbi" id="fbi"></span><div class="fbm"><div class="fbt" id="fbt"></div><div id="fbb"></div></div></div>
+    <div class="qnav"><button class="nbtn" id="nbtn">Next question &rarr;</button></div>
+  </div>
+  <div class="sscreen" id="sscr">
+    <div class="scirc"><div class="snum" id="snum">0</div><div class="sdenom">out of 5</div></div>
+    <div class="stitle" id="stitle"></div>
+    <div class="ssub" id="ssub"></div>
+    <div class="sbd" id="sbd"></div>
+    <button class="rbtn" id="rbtn">&#8635; Try again</button>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="flogo">X</div>
+  <span class="ftxt"><strong>Business Excel</strong> &nbsp;&middot;&nbsp; Topic 2: Excel Interface</span>
+</div>
+
+</div>
+<script>
+(function(){
+  var T=5,op={};
+  function openI(i){var e=document.getElementById('ai'+i);e.querySelector('.abody').style.display='block';e.className='aitem open';op[i]=true;upP();}
+  function closeI(i){var e=document.getElementById('ai'+i);e.querySelector('.abody').style.display='none';e.className='aitem';delete op[i];upP();}
+  function upP(){var n=Object.keys(op).length,p=Math.round(n/T*100);document.getElementById('pfill').style.width=p+'%';document.getElementById('ptxt').innerHTML=n+' of '+T+' sections read';document.getElementById('ppct').innerHTML=p+'%';var b=document.getElementById('dbadge');b.className=n===T?'dbadge show':'dbadge';}
+  var bs=document.querySelectorAll('.abtn');
+  for(var t=0;t<bs.length;t++){(function(b){b.addEventListener('click',function(){var i=parseInt(b.getAttribute('data-i'),10);op[i]?closeI(i):openI(i);});})(bs[t]);}
+  document.getElementById('bex').addEventListener('click',function(){for(var i=0;i<T;i++){if(!op[i])openI(i);}});
+  document.getElementById('bcl').addEventListener('click',function(){for(var i=0;i<T;i++){if(op[i])closeI(i);}});
+
+  var QS=[
+    {q:"What is the area called when you click the File tab in Excel?",o:["The Ribbon","Backstage view","The Formula Bar","Quick Access Toolbar"],c:1,r:"The File tab opens the Backstage view, where you manage workbook-level tasks like saving, printing, and exporting.",w:"The File tab opens the Backstage view &mdash; think of it as 'behind the curtain' where you manage the workbook itself."},
+    {q:"Which interface element shows the address of the currently selected cell?",o:["Formula Bar","Status Bar","Name Box","Quick Access Toolbar"],c:2,r:"The Name Box sits below the ribbon on the left and displays the selected cell's address, like A1 or D47.",w:"That's the Name Box &mdash; it sits below the ribbon on the left. The Formula Bar (next to it) shows the cell's contents."},
+    {q:"What is the fastest way to hide the ribbon and get more screen space?",o:["Press Ctrl+H","Double-click any ribbon tab","Click View → Hide Ribbon","Press Alt+F4"],c:1,r:"Double-clicking any ribbon tab collapses the commands chunk instantly &mdash; the quickest way to reclaim screen space.",w:"The fastest way is to double-click any ribbon tab, which collapses it instantly."},
+    {q:"What is the difference between a workbook and a worksheet in Excel?",o:["They are the same thing","A worksheet is the entire file; a workbook is one tab","A workbook is the entire file; a worksheet is one tab within it","A workbook is only used for formulas"],c:2,r:"The workbook is the whole Excel file. Worksheets are the individual tabs (Sheet1, Sheet2, etc.) inside that file.",w:"A workbook is the entire Excel file. Worksheets are the individual tabs inside it &mdash; like pages in a notebook."},
+    {q:"Which ribbon tab would you use to insert a chart into your worksheet?",o:["Home","Formulas","Insert","View"],c:2,r:"The Insert tab is where you add objects like charts, pictures, icons, and SmartArt to your worksheet.",w:"Charts are added from the Insert tab &mdash; a good reminder that tab names describe exactly what they contain."}
+  ];
+  var L=['A','B','C','D'],cur=0,score=0,ans=[];
+
+  function rQ(){
+    var q=QS[cur];
+    document.getElementById('qctr').innerHTML='Question '+(cur+1)+' of '+QS.length;
+    document.getElementById('qtxt').innerHTML=q.q;
+    document.getElementById('qpb').style.width=(cur/QS.length*100)+'%';
+    var fb=document.getElementById('fb');fb.className='fb';fb.style.display='none';
+    var nb=document.getElementById('nbtn');nb.className='nbtn';
+    nb.innerHTML=cur<QS.length-1?'Next question &rarr;':'See my results';
+    var opts=document.getElementById('opts');opts.innerHTML='';
+    for(var i=0;i<q.o.length;i++){
+      var btn=document.createElement('button');
+      btn.className='obtn';btn.setAttribute('data-o',i);
+      btn.innerHTML='<span class="oltr">'+L[i]+'</span><span>'+q.o[i]+'</span>';
+      btn.addEventListener('click',selA);
+      opts.appendChild(btn);
+    }
+  }
+
+  function selA(){
+    var sel=parseInt(this.getAttribute('data-o'),10),q=QS[cur];
+    var all=document.querySelectorAll('.obtn');
+    for(var i=0;i<all.length;i++)all[i].disabled=true;
+    ans[cur]=sel;
+    var ok=sel===q.c;if(ok)score++;
+    for(var j=0;j<all.length;j++){
+      var idx=parseInt(all[j].getAttribute('data-o'),10);
+      if(idx===q.c)all[j].className='obtn correct';
+      else if(idx===sel&&!ok)all[j].className='obtn wrong';
+    }
+    var fb=document.getElementById('fb');
+    document.getElementById('fbi').innerHTML=ok?'&#9989;':'&#10060;';
+    document.getElementById('fbt').innerHTML=ok?'Correct!':'Not quite';
+    document.getElementById('fbb').innerHTML=ok?q.r:q.w;
+    fb.className='fb show '+(ok?'fbc':'fbw');fb.style.display='flex';
+    document.getElementById('nbtn').className='nbtn show';
+  }
+
+  document.getElementById('nbtn').addEventListener('click',function(){
+    cur++;
+    if(cur<QS.length){rQ();}else{showS();}
+  });
+
+  function showS(){
+    document.getElementById('qbody').style.display='none';
+    document.getElementById('qpb').style.width='100%';
+    var ss=document.getElementById('sscr');ss.className='sscreen show';
+    document.getElementById('snum').innerHTML=score;
+    var ti=['Keep reviewing!','Good effort!','Nice work!','Almost perfect!','Perfect score!'];
+    var su=['Review the sections above and try again &mdash; you\'ve got this.','A few gaps to fill. Re-read the sections and give it another go.','Solid understanding. One more pass and you\'ll nail it.','Really strong! Just one slip &mdash; give it another go.','Outstanding! You\'ve mastered the Excel interface.'];
+    document.getElementById('stitle').innerHTML=ti[score];
+    document.getElementById('ssub').innerHTML=su[score];
+    var bd=document.getElementById('sbd');bd.innerHTML='';
+    for(var i=0;i<QS.length;i++){
+      var ok=ans[i]===QS[i].c;
+      var d=document.createElement('div');d.className='sbi';
+      d.innerHTML='<span class="sbic">'+(ok?'&#9989;':'&#10060;')+'</span><div class="sbq"><strong>Q'+(i+1)+': '+QS[i].q+'</strong>'+(ok?'Correct: '+QS[i].o[QS[i].c]:'Your answer: '+QS[i].o[ans[i]]+'<br>Correct answer: '+QS[i].o[QS[i].c])+'</div>';
+      bd.appendChild(d);
+    }
+  }
+
+  document.getElementById('rbtn').addEventListener('click',function(){
+    cur=0;score=0;ans=[];
+    document.getElementById('sscr').className='sscreen';
+    document.getElementById('qbody').style.display='block';
+    rQ();
+  });
+
+  rQ();
+})();
+</script>
+</body>
+</html>
