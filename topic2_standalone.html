@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2: Explore the Excel Interface</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1a1f2b;
+  background: #ffffff;
+  padding: 0 0 24px 0;
+}
+
+/* Header */
+.header {
+  background: #0f3d2a;
+  padding: 28px 28px 22px;
+  border-radius: 10px 10px 0 0;
+}
+.course-label {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 6px;
+}
+.header h1 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.header p {
+  font-size: 13px;
+  color: rgba(255,255,255,.65);
+}
+
+/* Toolbar */
+.toolbar {
+  background: #f0f4f0;
+  border: 1px solid #c8ddd0;
+  border-top: none;
+  padding: 11px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ctrl-btn {
+  font-family: Georgia, serif;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 5px;
+  border: 1px solid #9dbfaa;
+  background: #ffffff;
+  color: #1a5c35;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.ctrl-btn:hover { background: #e8f5ee; }
+.prog-track {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: #d4e8db;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: #2d9e62;
+  border-radius: 99px;
+  width: 0%;
+  transition: width .35s ease;
+}
+.prog-txt {
+  font-size: 12px;
+  color: #6a7a70;
+  white-space: nowrap;
+}
+
+/* Accordion */
+.acc-list {
+  border: 1px solid #c8ddd0;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+.acc-item { border-top: 1px solid #e0ece5; }
+.acc-item:first-child { border-top: none; }
+
+.acc-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+}
+.acc-trigger:hover { background: #f4faf6; }
+.acc-item.open .acc-trigger { background: #e8f5ee; }
+
+.acc-num-col {
+  width: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 0;
+  align-self: stretch;
+}
+.acc-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e0ece5;
+  color: #3a6a50;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+}
+.acc-item.open .acc-badge { background: #1a7a4a; color: #ffffff; }
+
+.acc-title-col {
+  flex: 1;
+  padding: 13px 6px 13px 0;
+}
+.acc-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #1a1f2b;
+  display: block;
+  line-height: 1.3;
+}
+.acc-sub {
+  font-size: 12px;
+  color: #7a8a80;
+  display: block;
+  margin-top: 2px;
+}
+.acc-chev-col {
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #7a8a80;
+}
+
+.acc-body {
+  display: none;
+  border-top: 1px solid #e0ece5;
+  background: #ffffff;
+}
+.acc-item.open .acc-body { display: block; }
+
+.acc-inner {
+  padding: 18px 18px 18px 44px;
+  font-size: 14px;
+  color: #3a4a42;
+  line-height: 1.75;
+}
+.acc-inner p { margin-bottom: 12px; }
+.acc-inner p:last-child { margin-bottom: 0; }
+.acc-inner ul { margin: 8px 0 12px; padding-left: 1.4em; }
+.acc-inner li { margin-bottom: 6px; }
+.acc-inner strong { font-weight: bold; color: #1a1f2b; }
+
+/* Callout boxes */
+.callout {
+  border-radius: 0 6px 6px 0;
+  padding: 11px 13px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+}
+.callout-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.callout-bd { flex: 1; }
+.callout-title {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 3px;
+  font-family: Georgia, serif;
+}
+.tip  { background: #e8f5ee; border-left: 3px solid #2d9e62; }
+.tip  .callout-title { color: #1a7a4a; }
+.tip  .callout-bd    { color: #1a5c35; }
+.note { background: #e8f0fc; border-left: 3px solid #4a80d4; }
+.note .callout-title { color: #1a4fa0; }
+.note .callout-bd    { color: #1a3d7a; }
+.info { background: #fff4e0; border-left: 3px solid #e8a020; }
+.info .callout-title { color: #7a4a00; }
+.info .callout-bd    { color: #5a3800; }
+
+/* Inline code */
+.kc {
+  font-family: 'Courier New', monospace;
+  font-size: 12.5px;
+  background: #eef2ee;
+  color: #1a4fa0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid #c8d8f0;
+}
+
+/* Table */
+.ref-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+.ref-table th {
+  background: #e8f0e8;
+  color: #3a6a50;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 7px 11px;
+  text-align: left;
+  border-bottom: 1px solid #c8ddd0;
+}
+.ref-table td { padding: 8px 11px; border-bottom: 1px solid #e8eee8; vertical-align: top; }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table .tn { font-weight: bold; color: #1a1f2b; white-space: nowrap; }
+
+/* Footer */
+.footer {
+  background: #f0f4f0;
+  border: 1px solid #c8ddd0;
+  border-top: none;
+  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 0 0 10px 10px;
+  margin-top: -1px;
+}
+.footer-note { font-size: 12px; color: #7a8a80; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px;margin:0 auto;">
+
+  <!-- HEADER -->
+  <div class="header">
+    <p class="course-label">Business Excel &middot; Unit 1</p>
+    <h1>Topic 2: Explore the Excel Interface</h1>
+    <p>Get comfortable with Excel&rsquo;s layout, terminology, and navigation before building your first workbook.</p>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <button class="ctrl-btn" id="btn-expand">Expand all</button>
+    <button class="ctrl-btn" id="btn-collapse">Collapse all</button>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <span class="prog-txt" id="prog-txt">0 of 5 read</span>
+  </div>
+
+  <!-- ACCORDION -->
+  <div class="acc-list">
+
+    <!-- 1 -->
+    <div class="acc-item" id="item-0">
+      <button class="acc-trigger" data-idx="0">
+        <div class="acc-num-col"><span class="acc-badge">1</span></div>
+        <div class="acc-title-col">
+          <span class="acc-title">Opening Excel &amp; the startup screen</span>
+          <span class="acc-sub">Your first look at the application</span>
+        </div>
+        <div class="acc-chev-col" id="chev-0">&#9660;</div>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <p>When you open Excel for the first time, you are prompted with a menu to either <strong>create a new file</strong> or <strong>open an existing file</strong>. Once a workbook &mdash; even a blank one &mdash; is open, the full application interface activates and the workbook area takes up most of the screen.</p>
+          <div class="callout tip">
+            <span class="callout-icon">&#10003;</span>
+            <div class="callout-bd">
+              <div class="callout-title">Good to know</div>
+              Excel files are called <strong>workbooks</strong>. Each workbook contains one or more <strong>worksheets</strong> (the individual tabs at the bottom). Don&rsquo;t mix up these two terms &mdash; they come up constantly.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="acc-item" id="item-1">
+      <button class="acc-trigger" data-idx="1">
+        <div class="acc-num-col"><span class="acc-badge">2</span></div>
+        <div class="acc-title-col">
+          <span class="acc-title">The ribbon and its tabs</span>
+          <span class="acc-sub">Where all commands live</span>
+        </div>
+        <div class="acc-chev-col" id="chev-1">&#9660;</div>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <p>At the top of the application is the <strong>ribbon</strong> &mdash; a bar that holds several tabs. Each tab groups related commands together. The tab name hints at what&rsquo;s inside.</p>
+          <table class="ref-table">
+            <thead><tr><th>Tab</th><th>What you&rsquo;ll find there</th></tr></thead>
+            <tbody>
+              <tr><td class="tn">File</td><td>Opens <strong>Backstage view</strong> &mdash; manage settings, save, print, export</td></tr>
+              <tr><td class="tn">Home</td><td>Most-used tools: clipboard, font, alignment, number formatting</td></tr>
+              <tr><td class="tn">Insert</td><td>Add objects: pictures, icons, charts, SmartArt</td></tr>
+              <tr><td class="tn">Page Layout</td><td>Themes, page setup, and sheet display options</td></tr>
+              <tr><td class="tn">Formulas</td><td>Create functions, define names, audit formulas</td></tr>
+              <tr><td class="tn">Data</td><td>Import data, sort, filter, and use data tools</td></tr>
+              <tr><td class="tn">Review</td><td>Proofing, track changes, protection, accessibility</td></tr>
+              <tr><td class="tn">View</td><td>Manage views, zoom, arrange windows, macros</td></tr>
+              <tr><td class="tn">Help</td><td>Excel help, Microsoft support, learning resources</td></tr>
+            </tbody>
+          </table>
+          <div class="callout tip">
+            <span class="callout-icon">&#128161;</span>
+            <div class="callout-bd">
+              <div class="callout-title">Pattern to remember</div>
+              When in doubt about where to find a command, look at the tab names first &mdash; they describe exactly what their tools do.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="acc-item" id="item-2">
+      <button class="acc-trigger" data-idx="2">
+        <div class="acc-num-col"><span class="acc-badge">3</span></div>
+        <div class="acc-title-col">
+          <span class="acc-title">Backstage view &amp; ribbon display options</span>
+          <span class="acc-sub">Managing what you see on screen</span>
+        </div>
+        <div class="acc-chev-col" id="chev-2">&#9660;</div>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <p>Clicking the <strong>File</strong> tab opens the <strong>Backstage view</strong> &mdash; a full panel with commands like New, Open, Save, Print, Share, and Export. Think of it as <em>behind the curtain</em>. Press <span class="kc">Esc</span> or the back arrow to return to your worksheet.</p>
+          <p>Control how much ribbon is visible using <strong>Ribbon Display Options</strong> (upper-right of Title bar):</p>
+          <ul>
+            <li><strong>Auto-hide Ribbon</strong> &mdash; hides it entirely; press <span class="kc">Alt</span> to peek</li>
+            <li><strong>Show Tabs</strong> &mdash; tab names only; click a tab to see its commands</li>
+            <li><strong>Show Tabs and Commands</strong> &mdash; the default; everything visible</li>
+          </ul>
+          <div class="callout note">
+            <span class="callout-icon">&#128276;</span>
+            <div class="callout-bd">
+              <div class="callout-title">Quick trick</div>
+              Double-clicking any ribbon tab toggles the ribbon on and off &mdash; handy when you need more screen space for a large dataset.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="acc-item" id="item-3">
+      <button class="acc-trigger" data-idx="3">
+        <div class="acc-num-col"><span class="acc-badge">4</span></div>
+        <div class="acc-title-col">
+          <span class="acc-title">Key interface elements to know</span>
+          <span class="acc-sub">Name box, formula bar, status bar &amp; more</span>
+        </div>
+        <div class="acc-chev-col" id="chev-3">&#9660;</div>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <p>Once a workbook is open, these interface elements become active:</p>
+          <ul>
+            <li><strong>Quick Access Toolbar</strong> &mdash; upper-left, above the ribbon. Shows AutoSave, Save, Undo, Redo by default. Fully customizable.</li>
+            <li><strong>Search / Tell Me</strong> &mdash; center of the Title bar. Search for commands or get help without leaving Excel.</li>
+            <li><strong>Name Box</strong> &mdash; below the ribbon on the left. Displays the address of the selected cell (e.g., <span class="kc">A1</span>).</li>
+            <li><strong>Formula Bar</strong> &mdash; next to the Name Box. Shows the contents or formula of the selected cell.</li>
+            <li><strong>Sheet tabs</strong> &mdash; bottom of the screen. Click <strong>+</strong> to add a new sheet.</li>
+            <li><strong>Scroll bars</strong> &mdash; vertical (right) and horizontal (bottom) for navigating large worksheets.</li>
+            <li><strong>View controls &amp; Zoom slider</strong> &mdash; bottom-right. Switch views and zoom in or out.</li>
+          </ul>
+          <div class="callout tip">
+            <span class="callout-icon">&#10003;</span>
+            <div class="callout-bd">
+              <div class="callout-title">Pro tip</div>
+              Click the Name Box, type any cell address like <span class="kc">D47</span>, and press Enter to jump there instantly &mdash; even in a very large spreadsheet.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="acc-item" id="item-4">
+      <button class="acc-trigger" data-idx="4">
+        <div class="acc-num-col"><span class="acc-badge">5</span></div>
+        <div class="acc-title-col">
+          <span class="acc-title">Bonus features &amp; hidden gems</span>
+          <span class="acc-sub">Things most beginners don&rsquo;t know exist</span>
+        </div>
+        <div class="acc-chev-col" id="chev-4">&#9660;</div>
+      </button>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <ul>
+            <li><strong>Draw tab</strong> &mdash; Annotate with a digital pen, convert ink to shapes or math formulas. Add via <em>File &rarr; Options &rarr; Customize Ribbon</em> if not visible.</li>
+            <li><strong>Minimize, Restore, Close</strong> &mdash; Standard window controls in the upper-right corner.</li>
+            <li><strong>Display Settings</strong> &mdash; Three view icons near the bottom-right, especially useful before printing.</li>
+          </ul>
+          <div class="callout info">
+            <span class="callout-icon">&#9733;</span>
+            <div class="callout-bd">
+              <div class="callout-title">Fun fact</div>
+              You can turn your cursor into a <strong>rainbow or galaxy pen</strong> on the Draw tab &mdash; a small delight tucked into an otherwise very serious spreadsheet application.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end acc-list -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-note">Business Excel &middot; Topic 2: Excel Interface</span>
+  </div>
+
+</div><!-- end wrapper -->
+
+<script>
+var total = 5;
+var opened = {};
+
+function toggleItem(idx) {
+  var item  = document.getElementById('item-' + idx);
+  var chev  = document.getElementById('chev-' + idx);
+  var badge = item.querySelector('.acc-badge');
+  var trigger = item.querySelector('.acc-trigger');
+  var isOpen = item.className.indexOf('open') > -1;
+  if (isOpen) {
+    item.className = 'acc-item';
+    chev.innerHTML = '&#9660;';
+    badge.style.background = '#e0ece5';
+    badge.style.color = '#3a6a50';
+    trigger.style.background = '#ffffff';
+    delete opened[idx];
+  } else {
+    item.className = 'acc-item open';
+    chev.innerHTML = '&#9650;';
+    badge.style.background = '#1a7a4a';
+    badge.style.color = '#ffffff';
+    trigger.style.background = '#e8f5ee';
+    opened[idx] = true;
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  var n = Object.keys(opened).length;
+  document.getElementById('prog-fill').style.width = Math.round(n / total * 100) + '%';
+  document.getElementById('prog-txt').innerHTML = n + ' of ' + total + ' read';
+}
+
+// Wire up triggers
+var triggers = document.querySelectorAll('.acc-trigger');
+for (var i = 0; i < triggers.length; i++) {
+  triggers[i].addEventListener('click', function() {
+    toggleItem(parseInt(this.getAttribute('data-idx')));
+  });
+}
+
+document.getElementById('btn-expand').addEventListener('click', function() {
+  for (var i = 0; i < total; i++) {
+    if (!opened[i]) toggleItem(i);
+  }
+});
+
+document.getElementById('btn-collapse').addEventListener('click', function() {
+  for (var i = 0; i < total; i++) {
+    if (opened[i]) toggleItem(i);
+  }
+});
+</script>
+
+</body>
+</html>
