@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 Lesson 2: Introducing the Excel Fundamentals</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --g1:#107c41;--g2:#185c37;--g3:#21a366;--g4:#33c481;--g5:#0d7239;
+  --gl:#e8f5ee;--gll:#f0faf4;--gb:#b2dfc5;
+  --bl:#e8f3fb;--bb:#b3d4f0;--al:#fff4e0;--ab:#f0c080;
+  --rl:#fde7e9;--rb:#f4b8be;--red:#c50f1f;
+  --td:#1b1b1b;--tm:#3d3d3d;--tl:#6e6e6e;
+  --w:#ffffff;--sf:#f0f0f0;
+  /* Capital branding fonts */
+  --fn-head:'Newsreader',Georgia,serif;
+  --fn-body:'Work Sans',system-ui,-apple-system,sans-serif;
+  --r:4px;--rl2:10px;--ease:cubic-bezier(.4,0,.2,1);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+/* Confetti */
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--fn-body);
+  font-size:16px;line-height:1.7;
+  color:var(--td);background:var(--sf);
+  padding:0;
+  margin:0;
+  display:flex;
+  min-height:100vh;
+}
+
+/* ── ROOT LAYOUT: sidebar + content side by side ── */
+#app-shell{
+  display:flex;
+  width:100%;
+  min-height:100vh;
+  align-items:flex-start;
+}
+
+/* ── SIDEBAR PANEL ── */
+.sidebar{
+  width:240px;
+  flex-shrink:0;
+  min-height:100vh;
+  background:#fff;
+  border-right:1px solid #e0e0e0;
+  display:flex;
+  flex-direction:column;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow:hidden;
+  transition:width 0.3s var(--ease);
+  z-index:100;
+  box-shadow:2px 0 12px rgba(0,0,0,.06);
+}
+.sidebar.collapsed{width:32px;}
+
+/* The toggle tab — sits at top right of sidebar */
+.sb-toggle{
+  position:absolute;
+  top:12px;
+  right:0;
+  width:32px;
+  height:32px;
+  background:var(--g2);
+  border:none;
+  border-radius:0 var(--r) var(--r) 0;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  box-shadow:2px 0 6px rgba(0,0,0,.15);
+  transition:background .15s;
+  flex-shrink:0;
+}
+.sb-toggle:hover{background:var(--g1);}
+.sb-toggle-icon{font-size:12px;color:#fff;transition:transform .3s var(--ease);}
+.sidebar.collapsed .sb-toggle-icon{transform:rotate(180deg);}
+
+/* When collapsed show a vertical label */
+.sb-collapsed-label{
+  display:none;
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  transform:rotate(180deg);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--tl);
+  white-space:nowrap;
+  margin-top:52px;
+  padding:8px 8px;
+  font-family:var(--fn-body);
+}
+.sidebar.collapsed .sb-collapsed-label{display:block;}
+
+/* Scrollable sidebar content — hidden when collapsed */
+.sb-scroll{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:var(--gb) transparent;
+  opacity:1;
+  transition:opacity .2s;
+}
+.sidebar.collapsed .sb-scroll{opacity:0;pointer-events:none;}
+.sb-scroll::-webkit-scrollbar{width:4px;}
+.sb-scroll::-webkit-scrollbar-track{background:transparent;}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--gb);border-radius:99px;}
+
+/* ── CONTENT AREA ── */
+.content-area{
+  flex:1;
+  min-width:0;
+  padding:16px 20px 40px;
+  transition:padding .3s var(--ease);
+}
+.page{max-width:860px;margin:0 auto;animation:fadeUp .5s var(--ease) both;}
+
+/* CONFETTI */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;display:none;}
+.confetti-container.active{display:block;}
+.confetti-piece{position:absolute;width:10px;height:10px;top:-20px;opacity:0;animation:confettiFall linear forwards;}
+
+/* LESSON HERO */
+.lesson-hero{
+  background:linear-gradient(135deg,var(--g2) 0%,var(--g1) 55%,var(--g5) 100%);
+  padding:44px 44px 0;
+  border-radius:var(--rl2) var(--rl2) 0 0;
+  position:relative;overflow:hidden;
+}
+.lesson-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.03);}
+.lesson-hero::after{content:'';position:absolute;bottom:-50px;left:30px;width:220px;height:220px;border-radius:50%;background:rgba(51,196,129,.07);}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;flex-wrap:wrap;}
+.pill{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--g4);background:rgba(51,196,129,.15);border:1px solid rgba(51,196,129,.3);padding:4px 12px;border-radius:99px;font-family:var(--fn-body);}
+.ediv{width:1px;height:14px;background:rgba(255,255,255,.2);}
+.etxt{font-size:13px;color:rgba(255,255,255,.55);letter-spacing:.03em;font-family:var(--fn-body);}
+.lesson-hero h1{
+  font-family:var(--fn-head);
+  font-size:clamp(24px,4vw,38px);
+  font-weight:400;
+  color:#fff;
+  line-height:1.2;
+  margin-bottom:12px;
+  position:relative;
+  letter-spacing:-.01em;
+}
+.lesson-hero-sub{font-size:clamp(14px,1.8vw,16px);color:rgba(255,255,255,.72);max-width:600px;margin-bottom:20px;position:relative;line-height:1.65;font-family:var(--fn-body);}
+.topic-nav{display:flex;gap:10px;margin-bottom:28px;position:relative;flex-wrap:wrap;}
+.tnav-btn{font-family:var(--fn-body);font-size:13px;font-weight:600;padding:7px 18px;border-radius:99px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);cursor:pointer;transition:.2s var(--ease);text-decoration:none;display:inline-block;}
+.tnav-btn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5);}
+.stripe{height:5px;margin:0 -44px;background:linear-gradient(90deg,var(--g4),var(--g3),var(--g4));background-size:200% auto;animation:shimmer 3s linear infinite;}
+
+/* OUTCOMES */
+.outcomes{background:#fff;border:1px solid #e0e0e0;border-top:none;padding:28px 36px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.outcomes h3{font-family:var(--fn-head);font-size:20px;font-weight:500;color:var(--g2);margin-bottom:6px;letter-spacing:-.01em;}
+.outcomes-sub{font-size:13px;color:var(--tl);margin-bottom:18px;font-family:var(--fn-body);}
+.outcomes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.outcome-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--gll);border:1px solid var(--gb);border-radius:var(--rl2);}
+.outcome-icon{font-size:16px;flex-shrink:0;margin-top:2px;}
+.outcome-txt{font-size:13px;color:var(--tm);line-height:1.5;font-family:var(--fn-body);}
+.outcome-txt strong{display:block;color:var(--g2);font-weight:600;margin-bottom:2px;font-size:13px;}
+
+/* TOPIC DIVIDER - more visual separation */
+.topic-divider{
+  background:linear-gradient(to right,var(--g2),var(--g1));
+  padding:20px 32px;
+  display:flex;align-items:center;gap:16px;
+  border:none;
+  margin-top:28px;
+}
+.topic-divider:first-of-type{margin-top:0;}
+.td-badge{
+  width:44px;height:44px;border-radius:var(--r);
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fn-head);font-size:18px;font-weight:400;color:#fff;
+  flex-shrink:0;border:1.5px solid rgba(255,255,255,.3);
+}
+.td-text h2{font-family:var(--fn-head);font-size:clamp(16px,2.2vw,20px);font-weight:400;color:#fff;margin-bottom:3px;letter-spacing:-.01em;}
+.td-text p{font-size:13px;color:rgba(255,255,255,.75);font-family:var(--fn-body);}
+
+/* TOOLBAR */
+.toolbar{background:#fff;border:1px solid #e0e0e0;border-top:none;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.ctrl{font-family:var(--fn-body);font-size:13px;font-weight:600;padding:6px 16px;border-radius:var(--r);border:1.5px solid var(--gb);background:#fff;color:var(--g1);cursor:pointer;transition:.2s var(--ease);white-space:nowrap;}
+.ctrl:hover{background:var(--gl);border-color:var(--g3);transform:translateY(-1px);box-shadow:0 2px 8px rgba(16,124,65,.15);}
+.ctrl:active{transform:translateY(0);}
+.ctrl:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.pw{flex:1;min-width:120px;}
+.pl{font-size:12px;color:var(--tl);margin-bottom:5px;display:flex;justify-content:space-between;font-family:var(--fn-body);}
+.pt{height:7px;background:#e8e8e8;border-radius:99px;overflow:hidden;}
+.pf{height:100%;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:99px;width:0%;transition:width .5s var(--ease);}
+.dbadge{display:none;align-items:center;gap:6px;background:var(--g1);color:#fff;font-size:13px;font-weight:600;letter-spacing:.03em;padding:6px 14px;border-radius:99px;white-space:nowrap;font-family:var(--fn-body);}
+.dbadge.show{display:flex;animation:pop .4s var(--ease) both;}
+.dbadge svg{width:15px;height:15px;}
+.quiz-locked-msg{font-size:12px;color:var(--tl);font-style:italic;font-family:var(--fn-body);}
+.quiz-locked-msg.hidden{display:none;}
+
+/* ACCORDION */
+.alist{background:#fff;border:1px solid #e0e0e0;border-top:none;}
+.aitem{border-top:1px solid #ebebeb;transition:box-shadow .2s;}
+.aitem:first-child{border-top:none;}
+.aitem.open{box-shadow:inset 4px 0 0 var(--g1);}
+.abtn{width:100%;display:flex;align-items:center;background:#fff;border:none;padding:0;cursor:pointer;text-align:left;transition:background .15s;}
+.abtn:hover{background:var(--gll);}
+.aitem.open .abtn{background:var(--gl);}
+.aitem.read .abtn::after{} /* handled via JS */
+.aicw{width:64px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:18px 0;align-self:stretch;}
+.aic{width:36px;height:36px;border-radius:var(--r);background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:18px;transition:.25s var(--ease);}
+.aitem.open .aic{background:var(--g1);box-shadow:0 2px 10px rgba(16,124,65,.35);transform:scale(1.05);}
+.albl{flex:1;padding:16px 8px 16px 0;}
+.anum{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);display:block;margin-bottom:3px;font-family:var(--fn-body);}
+.aitem.open .anum{color:var(--g1);}
+.atitle{font-size:clamp(14px,1.8vw,16px);font-weight:600;color:var(--td);display:block;line-height:1.3;font-family:var(--fn-body);}
+.asub{font-size:13px;color:var(--tl);display:block;margin-top:3px;font-family:var(--fn-body);}
+.aread-check{font-size:11px;color:var(--g3);font-weight:600;margin-top:4px;display:none;font-family:var(--fn-body);}
+.aitem.read .aread-check{display:block;}
+.acw{width:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.achev{width:28px;height:28px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tl);transition:.25s var(--ease);}
+.aitem.open .achev{background:var(--g1);color:#fff;transform:rotate(180deg);}
+.abody{display:none;border-top:1px solid var(--gb);}
+.aitem.open .abody{display:block;animation:slideDown .25s var(--ease) both;}
+.ain{padding:22px 28px 24px 64px;font-size:clamp(14px,1.7vw,16px);color:var(--tm);line-height:1.85;font-family:var(--fn-body);}
+.ain p{margin-bottom:14px;}.ain p:last-child,.ain .callout:last-child{margin-bottom:0;}
+.ain ul,.ain ol{margin:10px 0 14px;padding-left:1.6em;}.ain li{margin-bottom:9px;}
+.ain strong{font-weight:600;color:var(--td);}
+.ain em{font-style:italic;}
+.ain h3{font-family:var(--fn-head);font-size:17px;font-weight:500;color:var(--g2);margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--gl);letter-spacing:-.01em;}
+.ain h3:first-child{margin-top:0;}
+.kc{font-family:'Cascadia Code','Courier New',monospace;font-size:13px;font-weight:700;background:#f0f7f3;color:var(--g1);padding:2px 8px;border-radius:3px;border:1px solid var(--gb);}
+.callout{display:flex;gap:14px;padding:14px 16px;border-radius:var(--rl2);margin:16px 0;font-size:14px;line-height:1.7;font-family:var(--fn-body);}
+.callout:last-child{margin-bottom:0;}
+.ci{font-size:18px;flex-shrink:0;margin-top:2px;}.cb{flex:1;}
+.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.tip{background:#edfaf3;border:1px solid #a8dfc0;}.tip .ct{color:var(--g1);}.tip .cb{color:#1a5c35;}
+.note{background:var(--bl);border:1px solid var(--bb);}.note .ct{color:#005a9e;}.note .cb{color:#003e6b;}
+.fun{background:var(--al);border:1px solid var(--ab);}.fun .ct{color:#ca5010;}.fun .cb{color:#7a3800;}
+.warn{background:#fef8e7;border:1px solid #f0d080;}.warn .ct{color:#7a5a00;}.warn .cb{color:#5a4000;}
+/* Table */
+.sc-table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;border-radius:var(--rl2);overflow:hidden;border:1px solid #e0e0e0;font-family:var(--fn-body);}
+.sc-table thead tr{background:var(--g2);}
+.sc-table th{color:#fff;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em;padding:10px 16px;text-align:left;}
+.sc-table td{padding:10px 16px;border-bottom:1px solid #ebebeb;vertical-align:top;color:var(--tm);}
+.sc-table tr:last-child td{border-bottom:none;}
+.sc-table tbody tr:nth-child(even) td{background:#fafafa;}
+.sc-table tbody tr:hover td{background:var(--gll);}
+.sc-table .tn{font-weight:600;color:var(--g2);white-space:nowrap;}
+/* Figure */
+.fig-wrap{margin:18px 0;border:1px solid #e0e0e0;border-radius:var(--rl2);overflow:hidden;background:#fafafa;}
+.fig-wrap.narrow{max-width:420px;}
+.fig-img{width:100%;display:block;height:auto;}
+.fig-cap{font-size:12px;color:var(--tl);padding:8px 14px;background:#f5f5f5;border-top:1px solid #e0e0e0;text-align:center;font-style:italic;font-family:var(--fn-body);}
+/* Video */
+.video-wrap{margin:18px 0;border-radius:var(--rl2);overflow:hidden;border:1px solid #e0e0e0;background:#000;position:relative;padding-top:56.25%;}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+.video-cap{font-size:12px;color:var(--tl);padding:8px 14px;background:#f5f5f5;border:1px solid #e0e0e0;border-top:none;text-align:center;font-style:italic;font-family:var(--fn-body);border-radius:0 0 var(--rl2) var(--rl2);}
+/* Steps */
+.steps{margin:12px 0 16px;}
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--g1);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:var(--fn-body);}
+.step-body{flex:1;font-size:clamp(14px,1.7vw,16px);color:var(--tm);line-height:1.75;font-family:var(--fn-body);}
+/* QUIZ */
+.qwrap{background:#fff;border:1px solid #e0e0e0;border-top:none;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.qwrap.last{border-radius:0 0 var(--rl2) var(--rl2);}
+.qwrap.locked{opacity:.6;pointer-events:none;}
+.qhdr{background:linear-gradient(135deg,var(--g2),var(--g1));padding:22px 32px;display:flex;align-items:center;gap:16px;}
+.qhdr-ic{width:46px;height:46px;border-radius:var(--r);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.qhdr-txt h2{font-family:var(--fn-head);font-size:20px;font-weight:400;color:#fff;margin-bottom:3px;}
+.qhdr-txt p{font-size:14px;color:rgba(255,255,255,.7);font-family:var(--fn-body);}
+.qpbar{height:4px;background:linear-gradient(90deg,var(--g4),var(--g3));background-size:200% auto;animation:shimmer 3s linear infinite;transition:width .4s var(--ease);}
+.qbody{padding:32px 32px 28px;}
+.qctr{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g3);margin-bottom:12px;font-family:var(--fn-body);}
+.qtxt{font-family:var(--fn-head);font-size:clamp(17px,2.2vw,21px);font-weight:400;color:var(--td);line-height:1.4;margin-bottom:22px;letter-spacing:-.01em;}
+.opts{display:flex;flex-direction:column;gap:12px;}
+.obtn{font-family:var(--fn-body);font-size:clamp(14px,1.7vw,16px);display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:var(--rl2);border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;text-align:left;transition:.2s var(--ease);color:var(--td);}
+.obtn:hover:not(:disabled){border-color:var(--g3);background:var(--gll);transform:translateX(4px);}
+.obtn:disabled{cursor:default;transform:none;}
+.obtn.correct{border-color:var(--g1);background:#edfaf3;color:#1a5c35;animation:pop .3s var(--ease) both;}
+.obtn.wrong{border-color:var(--red);background:var(--rl);color:var(--red);}
+.oltr{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--tl);transition:.2s var(--ease);}
+.obtn.correct .oltr{background:var(--g1);color:#fff;}
+.obtn.wrong .oltr{background:var(--red);color:#fff;}
+.obtn.missed .oltr{background:var(--g1);color:#fff;}
+.obtn.missed{border-color:var(--g1);background:#edfaf3;color:#1a5c35;opacity:.7;}
+.fb{display:none;margin-top:18px;padding:14px 16px;border-radius:var(--rl2);font-size:14px;line-height:1.7;gap:12px;font-family:var(--fn-body);}
+.fb.show{display:flex;animation:slideDown .25s var(--ease) both;}
+.fb.fbc{background:#edfaf3;border:1px solid #a8dfc0;color:#1a5c35;}
+.fb.fbw{background:var(--rl);border:1px solid var(--rb);color:var(--red);}
+.fbi{font-size:18px;flex-shrink:0;margin-top:2px;}.fbm{flex:1;}
+.fbt{font-weight:700;margin-bottom:3px;font-size:15px;}
+.qnav{margin-top:22px;display:flex;justify-content:flex-end;}
+.nbtn{font-family:var(--fn-body);font-size:14px;font-weight:600;padding:10px 24px;border-radius:var(--r);border:none;background:var(--g1);color:#fff;cursor:pointer;display:none;transition:.2s var(--ease);letter-spacing:.02em;}
+.nbtn:hover{background:var(--g3);transform:translateY(-1px);box-shadow:0 3px 12px rgba(16,124,65,.3);}
+.nbtn:active{transform:translateY(0);}
+.nbtn.show{display:block;animation:fadeUp .3s var(--ease) both;}
+/* Score screen */
+.sscreen{display:none;padding:36px 32px;text-align:center;}
+.sscreen.show{display:block;animation:fadeUp .4s var(--ease) both;}
+.scirc{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 6px 28px rgba(16,124,65,.3);animation:pop .5s var(--ease) both;}
+.snum{font-family:var(--fn-head);font-size:36px;font-weight:400;color:#fff;line-height:1;}
+.sdenom{font-size:14px;color:rgba(255,255,255,.8);margin-top:3px;font-family:var(--fn-body);}
+.stitle{font-family:var(--fn-head);font-size:24px;font-weight:400;color:var(--td);margin-bottom:10px;letter-spacing:-.01em;}
+.ssub{font-size:15px;color:var(--tl);margin-bottom:28px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6;font-family:var(--fn-body);}
+.rbtn{font-family:var(--fn-body);font-size:14px;font-weight:600;padding:10px 28px;border-radius:var(--r);border:1.5px solid var(--gb);background:#fff;color:var(--g1);cursor:pointer;transition:.2s var(--ease);}
+.rbtn:hover{background:var(--gl);border-color:var(--g3);}
+.sbd{text-align:left;margin:24px 0;}
+.sbi{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #ebebeb;font-size:14px;color:var(--tm);line-height:1.6;font-family:var(--fn-body);}
+.sbi:last-child{border-bottom:none;}
+.sbic{font-size:16px;flex-shrink:0;margin-top:2px;}.sbq{flex:1;}
+.sbq strong{display:block;color:var(--td);margin-bottom:3px;font-size:15px;}
+/* Footer */
+.footer{background:var(--g2);padding:16px 28px;display:flex;align-items:center;border-radius:0 0 var(--rl2) var(--rl2);margin-top:-1px;}
+.flogo{width:30px;height:30px;border-radius:var(--r);background:var(--g4);display:flex;align-items:center;justify-content:center;font-family:var(--fn-head);font-size:16px;font-weight:400;color:var(--g2);margin-right:12px;flex-shrink:0;}
+.ftxt{font-size:13px;color:rgba(255,255,255,.6);font-family:var(--fn-body);}
+.ftxt strong{color:rgba(255,255,255,.9);font-weight:600;}
+
+/* YouTube link button */
+.yt-link-btn{
+  display:flex;align-items:stretch;gap:0;
+  border:1px solid #e0e0e0;border-radius:var(--rl2);
+  overflow:hidden;margin:18px 0;
+  text-decoration:none;color:inherit;
+  transition:box-shadow .2s,border-color .2s;
+  background:#fff;
+}
+.yt-link-btn:hover{border-color:#c00;box-shadow:0 4px 16px rgba(200,0,0,.12);}
+.yt-thumb-container{position:relative;width:200px;flex-shrink:0;}
+.yt-thumb-img{width:100%;height:100%;object-fit:cover;display:block;}
+.yt-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.yt-link-btn:hover .yt-thumb-overlay{background:rgba(0,0,0,.1);}
+.yt-play-circle{width:52px;height:52px;border-radius:50%;background:rgba(220,0,0,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,.4);transition:transform .2s;}
+.yt-link-btn:hover .yt-play-circle{transform:scale(1.08);}
+.yt-link-info{flex:1;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:4px;}
+.yt-link-label{font-size:13px;font-weight:700;color:#c00;letter-spacing:.02em;font-family:var(--fn-body);}
+.yt-link-title{font-size:15px;font-weight:600;color:var(--td);font-family:var(--fn-body);line-height:1.3;}
+.yt-link-note{font-size:12px;color:var(--tl);font-family:var(--fn-body);}
+@media(max-width:500px){
+  .yt-thumb-container{width:120px;}
+  .yt-play-circle{width:38px;height:38px;}
+  .yt-link-info{padding:12px 14px;}
+}
+
+/* Video thumbnail button (kept for reference) */
+.video-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:99999;align-items:center;justify-content:center;padding:20px;}
+.lb-inner{position:relative;width:100%;max-width:900px;}
+.lb-ratio{position:relative;padding-top:56.25%;background:#000;border-radius:var(--rl2);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.lb-ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.lb-close{position:absolute;top:-40px;right:0;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1;padding:4px 8px;opacity:.8;transition:opacity .15s;}
+.lb-close:hover{opacity:1;}
+.lb-hint{text-align:center;margin-top:12px;font-size:13px;color:rgba(255,255,255,.5);font-family:var(--fn-body);}
+
+/* ── SIDEBAR LAYOUT ── */
+/* ── LAYOUT: sidebar pushes content, defined in root styles above ── */
+.layout{display:block;}
+.main-content{display:block;}
+
+/* Sidebar inner elements */
+
+.sb-header{
+  background:linear-gradient(135deg,var(--g2),var(--g1));
+  padding:50px 14px 12px;  /* top padding makes room for toggle button */
+  flex-shrink:0;
+}
+.sb-header h3{font-family:var(--fn-head);font-size:14px;font-weight:400;color:#fff;margin-bottom:2px;}
+.sb-header p{font-size:11px;color:rgba(255,255,255,.65);font-family:var(--fn-body);}
+
+/* Overall progress inside sidebar */
+.sb-overall{padding:10px 14px;border-bottom:1px solid #ebebeb;background:var(--gll);flex-shrink:0;}
+.sb-overall-bar{height:5px;background:#e0e0e0;border-radius:99px;overflow:hidden;margin-top:5px;}
+.sb-overall-fill{height:100%;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:99px;width:0%;transition:width .5s var(--ease);}
+.sb-overall-label{font-size:11px;color:var(--tl);display:flex;justify-content:space-between;}
+
+/* Topic group */
+.sb-topic{border-bottom:1px solid #f0f0f0;}
+.sb-topic:last-child{border-bottom:none;}
+.sb-topic-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px 6px;cursor:pointer;}
+.sb-topic-hdr:hover{background:var(--gll);}
+.sb-tbadge{width:20px;height:20px;border-radius:3px;background:var(--g2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-topic-name{font-size:12px;font-weight:700;color:var(--g2);flex:1;line-height:1.3;}
+.sb-topic-check{font-size:13px;color:var(--g3);flex-shrink:0;opacity:0;transition:opacity .3s;}
+.sb-topic-check.show{opacity:1;}
+
+/* Section items */
+.sb-sections{padding:0 0 8px 0;}
+.sb-section{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:5px 14px 5px 32px;
+  cursor:pointer;transition:background .15s;
+  text-decoration:none;color:inherit;
+}
+.sb-section:hover{background:var(--gll);}
+.sb-section.active{background:var(--gl);}
+.sb-section-dot{width:8px;height:8px;border-radius:50%;background:#e0e0e0;flex-shrink:0;margin-top:5px;transition:background .3s;}
+.sb-section.read .sb-section-dot{background:var(--g1);}
+.sb-section-check{font-size:11px;color:var(--g3);flex-shrink:0;margin-top:2px;opacity:0;transition:opacity .3s;}
+.sb-section.read .sb-section-check{opacity:1;}
+.sb-section-lbl{font-size:11.5px;color:var(--tm);line-height:1.4;flex:1;}
+.sb-section.read .sb-section-lbl{color:var(--g2);font-weight:500;}
+
+/* Quiz row */
+.sb-quiz{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 32px;cursor:pointer;font-size:11px;color:var(--tl);font-style:italic;transition:background .15s;}
+.sb-quiz:hover{background:var(--gll);}
+.sb-quiz.unlocked{color:var(--g1);font-style:normal;font-weight:600;}
+.sb-quiz-icon{font-size:11px;flex-shrink:0;}
+
+/* Responsive */
+@media(max-width:640px){
+  #app-shell{flex-direction:column;}
+  .sidebar{width:100%;height:auto;min-height:unset;position:relative;border-right:none;border-bottom:1px solid #e0e0e0;}
+  .sidebar.collapsed{width:100%;height:44px;}
+  .sidebar.collapsed .sb-scroll{display:none;}
+  .sb-toggle{top:6px;right:6px;border-radius:var(--r);}
+  .content-area{padding:12px 12px 32px;}
+}
+
+@media(max-width:640px){
+  body{padding:0 0 32px;}
+  .lesson-hero{padding:28px 20px 0;}.stripe{margin:0 -20px;}
+  .toolbar{padding:12px 16px;gap:10px;}
+  .ain{padding:18px 18px 20px 18px;}
+  .qbody{padding:22px 18px 20px;}
+  .sscreen{padding:28px 18px;}
+  .footer,.topic-divider{padding:14px 18px;}
+  .qhdr{padding:18px 20px;}
+  .topic-nav{gap:8px;}
+  .outcomes{padding:20px 20px;}
+  .outcomes-grid{grid-template-columns:1fr;}
+}
+
+/* ── TRY IT PRACTICE COMPONENT ── */
+.tryit-wrap{
+  background:#fff;
+  border:2px solid var(--g3);
+  border-radius:var(--rl2);
+  margin:24px 0;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(16,124,65,.1);
+}
+.tryit-header{
+  background:linear-gradient(135deg,var(--g2),var(--g1));
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.tryit-header-left{display:flex;align-items:center;gap:12px;}
+.tryit-icon{font-size:22px;flex-shrink:0;}
+.tryit-title{font-family:var(--fn-head);font-size:17px;font-weight:400;color:#fff;margin-bottom:2px;letter-spacing:-.01em;}
+.tryit-subtitle{font-size:12px;color:rgba(255,255,255,.7);font-family:var(--fn-body);}
+.tryit-reset-btn{
+  font-family:var(--fn-body);font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:var(--r);
+  border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);
+  color:#fff;cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.tryit-reset-btn:hover{background:rgba(255,255,255,.25);}
+
+/* Task checklist */
+.tryit-tasks{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:14px 18px;
+  background:var(--gll);
+  border-bottom:1px solid var(--gb);
+}
+.tryit-task{
+  display:flex;align-items:center;gap:7px;
+  font-size:12.5px;color:var(--tm);
+  background:#fff;
+  border:1px solid var(--gb);
+  border-radius:99px;
+  padding:4px 12px 4px 8px;
+  font-family:var(--fn-body);
+  transition:all .3s;
+}
+.tryit-task.done{background:var(--gl);border-color:var(--g3);color:var(--g2);}
+.task-dot{font-size:12px;color:var(--tl);transition:color .3s;}
+.tryit-task.done .task-dot{color:var(--g1);}
+.tryit-task kbd{
+  font-family:monospace;font-size:11px;
+  background:#f0f0f0;border:1px solid #ccc;
+  border-radius:3px;padding:1px 5px;
+  color:var(--td);
+}
+.tryit-task.done kbd{background:var(--gl);border-color:var(--gb);}
+
+/* Simulated Excel container */
+.xl-container{
+  font-family:'Calibri','Segoe UI',sans-serif;
+  font-size:13px;
+  background:#fff;
+  user-select:none;
+  border:1px solid #d0d0d0;
+  border-top:none;
+  overflow:hidden;
+}
+.xl-grid-wrap{
+  overflow-x:auto;
+  max-width:100%;
+}
+
+/* Formula bar */
+.xl-formulabar{
+  display:flex;align-items:center;
+  background:#f5f5f5;
+  border-bottom:1px solid #d0d0d0;
+  padding:3px 0;
+  gap:0;
+}
+.xl-namebox{
+  width:72px;flex-shrink:0;
+  text-align:center;
+  font-size:12px;font-family:'Calibri',sans-serif;
+  border-right:1px solid #d0d0d0;
+  padding:3px 8px;
+  color:#1a1f2b;font-weight:600;
+}
+.xl-fb-sep{
+  width:32px;flex-shrink:0;
+  text-align:center;font-size:13px;
+  color:#888;border-right:1px solid #d0d0d0;
+  padding:3px 6px;
+}
+.xl-formulaval{
+  flex:1;padding:3px 8px;
+  font-size:13px;color:#1a1f2b;
+  min-height:22px;white-space:nowrap;overflow:hidden;
+}
+
+/* Grid */
+.xl-grid-wrap{overflow-x:auto;}
+.xl-col-headers{display:flex;background:#f0f0f0;border-bottom:1px solid #d0d0d0;}
+.xl-corner{width:40px;flex-shrink:0;border-right:1px solid #d0d0d0;}
+.xl-col-hdr{
+  width:120px;flex-shrink:0;
+  text-align:center;padding:3px 4px;
+  font-size:12px;color:#444;font-weight:600;
+  border-right:1px solid #d0d0d0;
+  font-family:'Calibri',sans-serif;
+}
+.xl-col-hdr.active-col{background:#d3e4f5;color:#1a1f2b;}
+.xl-rows{border-bottom:1px solid #d0d0d0;}
+.xl-row{display:flex;border-top:1px solid #e8e8e8;min-height:26px;}
+.xl-row-hdr{
+  width:40px;flex-shrink:0;
+  min-height:26px;
+  text-align:center;
+  background:#f0f0f0;
+  border-right:1px solid #d0d0d0;
+  font-size:11px;color:#444;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Calibri',sans-serif;
+}
+.xl-row-hdr.active-row{background:#d3e4f5;color:#1a1f2b;}
+.xl-cell{
+  width:120px;flex-shrink:0;
+  min-height:26px;
+  height:26px;
+  border-right:1px solid #e8e8e8;
+  padding:2px 4px;
+  position:relative;
+  cursor:cell;
+  display:flex;align-items:center;
+  overflow:visible;
+  white-space:nowrap;
+  font-size:13px;
+  font-family:'Calibri',sans-serif;
+  box-sizing:border-box;
+}
+.xl-cell:hover{background:#f5faff;}
+.xl-cell.selected{
+  outline:2px solid #107c41;
+  outline-offset:-1px;
+  z-index:2;
+  background:#fff !important;
+}
+.xl-cell.selected.editing{outline-color:#1a6cb5;}
+.xl-cell .xl-cell-text{
+  flex:1;overflow:hidden;white-space:nowrap;
+  pointer-events:none;
+}
+.xl-cell.has-number .xl-cell-text{text-align:right;width:100%;}
+.xl-cell.editing-input{padding:0;}
+.xl-cell input.xl-input{
+  width:100%;height:100%;
+  border:none;outline:none;
+  font-family:'Calibri',sans-serif;
+  font-size:13px;color:#1a1f2b;
+  background:transparent;
+  padding:0 4px;
+}
+/* Selection highlight on headers */
+.xl-col-hdr.sel-col{background:#c7dff5;}
+.xl-row-hdr.sel-row{background:#c7dff5;}
+
+/* Hint bar */
+.xl-hint{
+  background:#fffbe6;
+  border-top:1px solid #f0d080;
+  padding:8px 16px;
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12.5px;color:#5a4a00;
+  font-family:var(--fn-body);
+  line-height:1.5;
+}
+.xl-hint-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.xl-hint kbd{
+  font-family:monospace;font-size:11px;
+  background:#fff8e0;border:1px solid #d4b060;
+  border-radius:3px;padding:1px 5px;color:#5a4000;
+}
+
+/* Completion */
+.tryit-complete{
+  background:var(--gl);
+  border-top:2px solid var(--g3);
+  padding:14px 20px;
+  display:flex;align-items:center;gap:12px;
+  font-size:14px;color:var(--g2);
+  font-family:var(--fn-body);
+  line-height:1.5;
+  animation:slideDown .3s ease both;
+}
+.tryit-complete-icon{font-size:24px;flex-shrink:0;}
+
+</style>
+</head>
+<body>
+<div class="confetti-container" id="confetti-container"></div>
+<div class="video-lightbox" id="video-lightbox" onclick="if(event.target===this)closeVideoLightbox()">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeVideoLightbox()">&#10005;</button>
+    <div class="lb-ratio">
+      <iframe id="lb-iframe" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <p class="lb-hint">Press Esc or click outside to close</p>
+  </div>
+</div>
+
+<div id="app-shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar" aria-label="Lesson outline">
+  <button class="sb-toggle" id="sb-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle outline">
+    <span class="sb-toggle-icon">&#9664;</span>
+  </button>
+  <div class="sb-scroll">
+    <div class="sb-header">
+      <h3>Lesson Outline</h3>
+      <p>Module 1 &middot; Lesson 2</p>
+    </div>
+    <div class="sb-overall">
+      <div class="sb-overall-label">
+        <span id="sb-overall-txt">Overall progress</span>
+        <span id="sb-overall-pct">0%</span>
+      </div>
+      <div class="sb-overall-bar"><div class="sb-overall-fill" id="sb-overall-fill"></div></div>
+    </div>
+    <div class="sb-topic">
+      <div class="sb-topic-hdr" onclick="scrollToAnchor('topic1')">
+        <div class="sb-tbadge">T1</div>
+        <span class="sb-topic-name">Enter &amp; Edit Data</span>
+        <span class="sb-topic-check" id="sb-t1-check">&#10003;</span>
+      </div>
+      <div class="sb-sections">
+        <a class="sb-section" id="sb-t1-s0" onclick="scrollToSection('t1-ai0');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Entering data</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t1-s1" onclick="scrollToSection('t1-ai1');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Completing a data entry</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t1-s2" onclick="scrollToSection('t1-ai2');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Editing &amp; cancelling</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t1-s3" onclick="scrollToSection('t1-ai3');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Clearing, undo &amp; redo</span><span class="sb-section-check">&#10003;</span></a>
+        <div class="sb-quiz" id="sb-t1-quiz" onclick="scrollToSection('t1-qwrap')"><span class="sb-quiz-icon">&#128274;</span><span id="sb-t1-quiz-lbl">Knowledge check (locked)</span></div>
+      </div>
+    </div>
+    <div class="sb-topic">
+      <div class="sb-topic-hdr" onclick="scrollToAnchor('topic2')">
+        <div class="sb-tbadge">T2</div>
+        <span class="sb-topic-name">Save Workbooks</span>
+        <span class="sb-topic-check" id="sb-t2-check">&#10003;</span>
+      </div>
+      <div class="sb-sections">
+        <a class="sb-section" id="sb-t2-s0" onclick="scrollToSection('t2-ai0');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Save new &amp; existing</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t2-s1" onclick="scrollToSection('t2-ai1');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Save As &amp; different formats</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t2-s2" onclick="scrollToSection('t2-ai2');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Save as PDF</span><span class="sb-section-check">&#10003;</span></a>
+        <a class="sb-section" id="sb-t2-s3" onclick="scrollToSection('t2-ai3');return false;" href="#"><span class="sb-section-dot"></span><span class="sb-section-lbl">Convert &amp; quick reference</span><span class="sb-section-check">&#10003;</span></a>
+        <div class="sb-quiz" id="sb-t2-quiz" onclick="scrollToSection('t2-qwrap')"><span class="sb-quiz-icon">&#128274;</span><span id="sb-t2-quiz-lbl">Knowledge check (locked)</span></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="content-area">
+<div class="page">
+
+<!-- HERO -->
+<div class="lesson-hero">
+  <div class="eyebrow">
+    <span class="pill">Module 1 &nbsp;&middot;&nbsp; Lesson 2</span>
+    <span class="ediv"></span>
+    <span class="etxt">Business Excel &nbsp;&middot;&nbsp; Excel Associate</span>
+  </div>
+  <h1>Introducing the Excel Fundamentals</h1>
+  <p class="lesson-hero-sub">Learn how to enter and edit data in a worksheet, and how to save your work reliably — the two most essential skills for everyday Excel use.</p>
+  <div class="topic-nav">
+    <a href="#topic1" class="tnav-btn">&#9999; Topic 1 &mdash; Enter &amp; Edit Data</a>
+    <a href="#topic2" class="tnav-btn">&#128190; Topic 2 &mdash; Save Workbooks</a>
+  </div>
+  <div class="stripe"></div>
+</div>
+
+<!-- LESSON OUTCOMES -->
+<div class="outcomes">
+  <h3>Lesson Outcomes</h3>
+  <p class="outcomes-sub">By the end of this lesson, you will be able to:</p>
+  <div class="outcomes-grid">
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Enter data into cells</strong>Type text and numbers and confirm entries using multiple methods</div></div>
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Navigate while entering data</strong>Use Enter, Tab, arrow keys, and Ctrl+Enter to move between cells</div></div>
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Edit and cancel cell entries</strong>Modify cell contents using the formula bar, double-click, or F2</div></div>
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Clear, undo, and redo</strong>Remove cell contents and reverse or restore up to 100 actions</div></div>
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Save workbooks multiple ways</strong>Use Ctrl+S, Save As, F12, and the Quick Access Toolbar</div></div>
+    <div class="outcome-item"><span class="outcome-icon">&#9989;</span><div class="outcome-txt"><strong>Save in different formats</strong>Export to PDF, older Excel formats, and online locations</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ TOPIC 1 ══════════════════════════════ -->
+<div id="topic1">
+<div class="topic-divider">
+  <div class="td-badge">T1</div>
+  <div class="td-text">
+    <h2>Topic 1: Enter and Edit Data</h2>
+    <p>Typing, navigating, editing, and correcting cell contents</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="ctrl" id="t1-bex">Expand all</button>
+  <button class="ctrl" id="t1-bcl">Collapse all</button>
+  <div class="pw">
+    <div class="pl"><span id="t1-ptxt">0 of 4 sections read</span><span id="t1-ppct">0%</span></div>
+    <div class="pt"><div class="pf" id="t1-pfill"></div></div>
+  </div>
+  <div class="dbadge" id="t1-dbadge">
+    <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="white" fill-opacity="0.2"/><path d="M4.5 8.5L6.5 10.5L11.5 5.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    All sections read!
+  </div>
+  <span class="quiz-locked-msg" id="t1-lock-msg">&#128274; Complete all sections to unlock the quiz</span>
+</div>
+
+<div class="alist">
+
+  <!-- S1: Entering data -->
+  <div class="aitem" id="t1-ai0">
+    <button class="abtn" data-acc="t1" data-i="0"><div class="aicw"><div class="aic">&#9999;</div></div><div class="albl"><span class="anum">Section 01</span><span class="atitle">Entering data into a worksheet</span><span class="asub">Selecting cells and starting a data entry</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>Entering data into Excel is straightforward: select a cell, start typing, and confirm your entry. The key is understanding how Excel handles data <em>before</em> you confirm it — what you type appears in both the cell and the Formula Bar, and you have full control until you press a completion key.</p>
+      <h3>Basic steps to enter data</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Open or create a workbook.</strong> You need an open workbook before you can enter data. Use <span class="kc">Ctrl+N</span> for a new blank workbook or <span class="kc">Ctrl+O</span> to open an existing one.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Select the cell</strong> where you want to enter data. Click on it, or navigate using the arrow keys. The selected cell is highlighted with a green border and its address appears in the Name Box.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Start typing.</strong> As you type, your text appears in the cell and in the Formula Bar above. Excel is in <em>entry mode</em> at this point &mdash; you haven't committed the data yet.</div></div>
+      </div>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">What you can enter</div>Excel cells can hold <strong>text</strong> (labels, names, descriptions), <strong>numbers</strong> (values for calculations), <strong>dates and times</strong>, and <strong>formulas</strong> (which start with an = sign). You don't need to do anything special to indicate which type &mdash; Excel detects it automatically. Numbers align right by default; text aligns left.</div></div>
+      <div class="callout note"><span class="ci">&#128161;</span><div class="cb"><div class="ct">Column width</div>You'll probably want to adjust column widths and row heights as you add data &mdash; Excel cells don't automatically expand to fit long text. That skill is covered in the next module. For now, just be aware that your data is there even if it appears cut off.</div></div>
+    </div></div>
+  </div>
+
+  <!-- S2: Completing a data entry -->
+  <div class="aitem" id="t1-ai1">
+    <button class="abtn" data-acc="t1" data-i="1"><div class="aicw"><div class="aic">&#9654;</div></div><div class="albl"><span class="anum">Section 02</span><span class="atitle">Completing a data entry</span><span class="asub">Keys for confirming data and moving between cells</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>After typing data into a cell, you need to <strong>complete the entry</strong> to confirm it. Excel gives you several ways to do this, each of which also moves your cursor to a different location. Choosing the right key can save a lot of time when entering large amounts of data.</p>
+      <table class="sc-table">
+        <thead><tr><th>Key</th><th>What it does</th><th>Best used when</th></tr></thead>
+        <tbody>
+          <tr><td><span class="kc">Enter</span></td><td>Confirms entry and moves cursor <strong>down</strong> one row</td><td>Entering data column by column</td></tr>
+          <tr><td><span class="kc">Tab</span></td><td>Confirms entry and moves cursor <strong>right</strong> one column</td><td>Entering data row by row across columns</td></tr>
+          <tr><td><span class="kc">Shift+Tab</span></td><td>Confirms entry and moves cursor <strong>left</strong> one column</td><td>Moving back to fix an entry in the previous cell</td></tr>
+          <tr><td><span class="kc">Arrow keys</span></td><td>Confirms entry and moves cursor <strong>one cell</strong> in any direction</td><td>Flexible navigation while entering data</td></tr>
+          <tr><td><span class="kc">Ctrl+Enter</span></td><td>Confirms entry and <strong>stays in the same cell</strong></td><td>Entering data without moving the cursor</td></tr>
+          <tr><td>Click another cell</td><td>Confirms entry and moves cursor to the clicked cell</td><td>Common but not considered best practice &mdash; slower and less precise</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><span class="ci">&#128161;</span><div class="cb"><div class="ct">Pro workflow tip</div>When entering data across a row (like filling in a table), use <span class="kc">Tab</span> to move right through each column. When you press <span class="kc">Enter</span> at the end of the row, Excel returns your cursor to the first column of the <em>next row</em> &mdash; right where you started tabbing from. This makes filling in tables very efficient.</div></div>
+      <div class="callout note"><span class="ci">&#128276;</span><div class="cb"><div class="ct">The Enter button in the Formula Bar</div>Next to the formula bar you'll see a <strong>tick mark (&#10003;)</strong> and an <strong>X</strong>. The tick mark is the Enter button &mdash; it confirms your entry but keeps the cursor in the same cell (same as <span class="kc">Ctrl+Enter</span>). The X is the Cancel button &mdash; it discards your entry without making any change.</div></div>
+    </div></div>
+  </div>
+
+
+  <!-- S3: Editing and cancelling -->
+  <div class="aitem" id="t1-ai2">
+    <button class="abtn" data-acc="t1" data-i="2"><div class="aicw"><div class="aic">&#9998;</div></div><div class="albl"><span class="anum">Section 03</span><span class="atitle">Editing and cancelling cell entries</span><span class="asub">Modifying existing data and undoing mistakes</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>You will frequently need to go back and change something you already typed. Excel provides several ways to edit cell contents, depending on whether you want to replace the entire entry or make a small change at a specific position within the text.</p>
+      <h3>Edit cell contents</h3>
+      <p>There are three main ways to edit a cell:</p>
+      <ul>
+        <li><strong>Click the cell once, then edit in the Formula Bar</strong> &mdash; Click the cell to select it, then click inside the Formula Bar and make your changes there. Good for seeing the full content of a cell with a long entry.</li>
+        <li><strong>Double-click the cell</strong> &mdash; Places your cursor directly inside the cell at the position you clicked. This puts Excel into <em>edit mode</em>, letting you position your cursor exactly where you want within the text.</li>
+        <li><strong>Press <span class="kc">F2</span></strong> &mdash; Pressing F2 with a cell selected enters edit mode with the cursor at the end of the cell content. A fast keyboard-only alternative to double-clicking.</li>
+      </ul>
+      <p>Once in edit mode, you can use the arrow keys to move within the cell text, <span class="kc">Backspace</span> to delete characters to the left, and <span class="kc">Delete</span> to delete characters to the right. Use any completion key (Enter, Tab, etc.) when done.</p>
+      <h3>Cancel a cell entry</h3>
+      <p>If you've started typing and want to abandon the entry entirely without changing the cell:</p>
+      <ul>
+        <li>Press <span class="kc">Esc</span> on your keyboard &mdash; the fastest method</li>
+        <li>Click the <strong>Cancel button (X)</strong> in the Formula Bar</li>
+      </ul>
+      <div class="callout warn"><span class="ci">&#9888;</span><div class="cb"><div class="ct">Important distinction</div>If you <strong>click another cell</strong> while in the middle of an entry, Excel <em>confirms</em> the entry rather than cancelling it. This is a common source of accidental edits. Always use <span class="kc">Esc</span> if you want to abandon what you were typing.</div></div>
+    </div></div>
+  </div>
+
+  <!-- S4: Clearing, undo, redo -->
+  <div class="aitem" id="t1-ai3">
+    <button class="abtn" data-acc="t1" data-i="3"><div class="aicw"><div class="aic">&#128260;</div></div><div class="albl"><span class="anum">Section 04</span><span class="atitle">Clearing cells, undo, and redo</span><span class="asub">Removing data and reversing actions safely</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <h3>Clear cell contents</h3>
+      <p>There are two ways to clear the contents of a cell:</p>
+      <ul>
+        <li>Select the cell and press the <span class="kc">Delete</span> key on your keyboard &mdash; this clears the contents but keeps the cell (and any formatting) in place</li>
+        <li>Right-click the cell and choose <strong>Clear Contents</strong> from the context menu</li>
+      </ul>
+      <div class="callout warn"><span class="ci">&#9888;</span><div class="cb"><div class="ct">Critical warning: Delete vs. Clear Contents</div>There are <strong>two different Delete options</strong> in Excel's context menu. <strong>Clear Contents</strong> removes only the data from the cell and leaves the cell itself in place. <strong>Delete</strong> (also in the context menu) removes the entire cell and <em>shifts surrounding cells to fill the gap</em> &mdash; which can completely disrupt the layout of your worksheet. Always use <strong>Clear Contents</strong> or the keyboard Delete key unless you specifically want to remove a cell and shift data.</div></div>
+      <h3>Undo and Redo</h3>
+      <p>Excel keeps a history of your recent actions and lets you reverse or restore them:</p>
+      <table class="sc-table">
+        <thead><tr><th>Action</th><th>Shortcut</th><th>Button location</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Undo</strong> &mdash; reverse your last action</td><td><span class="kc">Ctrl+Z</span></td><td>Quick Access Toolbar (curved arrow left)</td></tr>
+          <tr><td><strong>Redo</strong> &mdash; restore an action you undid</td><td><span class="kc">Ctrl+Y</span></td><td>Quick Access Toolbar (curved arrow right)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">Did you know?</div>Excel keeps up to <strong>100 undo actions</strong> in memory &mdash; and this history persists even after you save the file. So if you save and then realize you made a mistake 30 steps ago, you can still use <span class="kc">Ctrl+Z</span> to go back. That said, undoing many steps means losing a lot of recent work, so it's usually better to make a targeted edit instead.</div></div>
+    </div></div>
+  </div>
+
+</div><!-- end t1 alist -->
+
+<!-- PRACTICE SIM (between accordion and quiz) -->
+<div id="tryit-gate-wrap">
+<!-- PRACTICE COMPONENT: Try It - Enter and Edit Data -->
+  <div class="tryit-wrap" id="tryit-section">
+    <div class="tryit-header">
+      <div class="tryit-header-left">
+        <span class="tryit-icon">&#9881;</span>
+        <div>
+          <h3 class="tryit-title">Try It: Enter &amp; Edit Data</h3>
+          <p class="tryit-subtitle">Practice entering, editing, and clearing data in a simulated Excel grid</p>
+        </div>
+      </div>
+      <button class="tryit-reset-btn" onclick="resetPractice()">&#8635; Reset</button>
+    </div>
+
+    <!-- Task progress -->
+    <div class="tryit-tasks" id="tryit-tasks">
+      <div class="tryit-task" id="task-0"><span class="task-dot" id="tdot-0">&#9675;</span><span class="task-lbl">Type your <strong>first name</strong> in <strong>A1</strong></span></div>
+      <div class="tryit-task" id="task-1"><span class="task-dot" id="tdot-1">&#9675;</span><span class="task-lbl">Press <kbd>Tab</kbd> &mdash; cursor moves to <strong>B1</strong></span></div>
+      <div class="tryit-task" id="task-2"><span class="task-dot" id="tdot-2">&#9675;</span><span class="task-lbl">Type your <strong>last name</strong> in <strong>B1</strong></span></div>
+      <div class="tryit-task" id="task-3"><span class="task-dot" id="tdot-3">&#9675;</span><span class="task-lbl">Press <kbd>Enter</kbd> &mdash; cursor jumps to <strong>A2</strong></span></div>
+      <div class="tryit-task" id="task-4"><span class="task-dot" id="tdot-4">&#9675;</span><span class="task-lbl">Double-click <strong>A1</strong> to enter edit mode &amp; change your name</span></div>
+      <div class="tryit-task" id="task-5"><span class="task-dot" id="tdot-5">&#9675;</span><span class="task-lbl">Click <strong>B1</strong> and press <kbd>Delete</kbd> to clear your last name</span></div>
+    </div>
+
+    <!-- Simulated Excel UI -->
+    <div class="xl-container">
+      <!-- Formula bar -->
+      <div class="xl-formulabar">
+        <div class="xl-namebox" id="xl-namebox">A1</div>
+        <div class="xl-fb-sep">&#402;<sub>x</sub></div>
+        <div class="xl-formulaval" id="xl-formulaval">&nbsp;</div>
+      </div>
+      <!-- Grid -->
+      <div class="xl-grid-wrap">
+        <!-- Column headers -->
+        <div class="xl-col-headers">
+          <div class="xl-corner"></div>
+          <div class="xl-col-hdr" id="xlch-0">A</div>
+          <div class="xl-col-hdr" id="xlch-1">B</div>
+          <div class="xl-col-hdr" id="xlch-2">C</div>
+          <div class="xl-col-hdr" id="xlch-3">D</div>
+          <div class="xl-col-hdr" id="xlch-4">E</div>
+        </div>
+        <!-- Rows -->
+        <div class="xl-rows" id="xl-rows"></div>
+      </div>
+    </div>
+
+    <!-- Instruction hint bar -->
+    <div class="xl-hint" id="xl-hint">
+      <span class="xl-hint-icon">&#128161;</span>
+      <span id="xl-hint-text">Click any cell to select it, then start typing. Press <kbd>Enter</kbd> to confirm and move down, <kbd>Tab</kbd> to move right, <kbd>Esc</kbd> to cancel.</span>
+    </div>
+
+    <!-- Completion message -->
+    <div class="tryit-complete" id="tryit-complete" style="display:none;">
+      <span class="tryit-complete-icon">&#127881;</span>
+      <div>
+        <strong>Nice work!</strong> You've practiced all six key data entry and editing actions.
+        These are the foundations you'll use in every single Excel worksheet you ever build.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- T1 QUIZ -->
+<div class="qwrap locked" id="t1-qwrap">
+  <div class="qhdr"><div class="qhdr-ic">&#9997;</div><div class="qhdr-txt"><h2>Topic 1: Knowledge Check</h2><p id="t1-quiz-subhead">Read all sections &amp; complete the simulation above to unlock &nbsp;&middot;&nbsp; 5 questions &nbsp;&middot;&nbsp; Retake anytime</p></div></div>
+  <div class="qpbar" id="t1-qpb" style="width:0%"></div>
+  <div class="qbody" id="t1-qbody">
+    <div class="qctr" id="t1-qctr">Question 1 of 5</div>
+    <div class="qtxt" id="t1-qtxt"></div>
+    <div class="opts" id="t1-opts"></div>
+    <div class="fb" id="t1-fb"><span class="fbi" id="t1-fbi"></span><div class="fbm"><div class="fbt" id="t1-fbt"></div><div id="t1-fbb"></div></div></div>
+    <div class="qnav"><button class="nbtn" id="t1-nbtn">Next question &rarr;</button></div>
+  </div>
+  <div class="sscreen" id="t1-sscr">
+    <div class="scirc"><div class="snum" id="t1-snum">0</div><div class="sdenom">out of 5</div></div>
+    <div class="stitle" id="t1-stitle"></div><div class="ssub" id="t1-ssub"></div>
+    <div class="sbd" id="t1-sbd"></div>
+    <button class="rbtn" id="t1-rbtn">&#8635; Try again</button>
+  </div>
+</div>
+</div><!-- end topic1 -->
+
+<!-- ══════════════════════════════ TOPIC 2 ══════════════════════════════ -->
+<div id="topic2">
+<div class="topic-divider" style="margin-top:28px;">
+  <div class="td-badge">T2</div>
+  <div class="td-text">
+    <h2>Topic 2: Save Workbooks</h2>
+    <p>Saving, Save As, file formats, PDF export, and version conversion</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="ctrl" id="t2-bex">Expand all</button>
+  <button class="ctrl" id="t2-bcl">Collapse all</button>
+  <div class="pw">
+    <div class="pl"><span id="t2-ptxt">0 of 4 sections read</span><span id="t2-ppct">0%</span></div>
+    <div class="pt"><div class="pf" id="t2-pfill"></div></div>
+  </div>
+  <div class="dbadge" id="t2-dbadge">
+    <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="white" fill-opacity="0.2"/><path d="M4.5 8.5L6.5 10.5L11.5 5.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    All sections read!
+  </div>
+  <span class="quiz-locked-msg" id="t2-lock-msg">&#128274; Complete all sections to unlock the quiz</span>
+</div>
+
+<div class="alist">
+
+  <!-- S1: Save new and existing -->
+  <div class="aitem" id="t2-ai0">
+    <button class="abtn" data-acc="t2" data-i="0"><div class="aicw"><div class="aic">&#128190;</div></div><div class="albl"><span class="anum">Section 01</span><span class="atitle">Saving new and existing workbooks</span><span class="asub">The basics of keeping your work safe</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>Saving your work is one of the most important habits to develop in Excel. If you close the program or lose power without saving, any unsaved changes are gone. Get into the habit of saving frequently using <span class="kc">Ctrl+S</span>.</p>
+      <p>Before saving, think about <strong>where</strong> you want to save it. Online locations (like OneDrive or SharePoint) are useful for collaboration and allow version history. Local saves (on your PC) are faster and work without internet.</p>
+      <h3>Save a new workbook for the first time</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Go to <strong>File &gt; Save</strong>, or press <span class="kc">Ctrl+S</span>. Since this is a new file, Excel will prompt you to choose a location and name.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Check the <strong>location/folder</strong> where you want to store the workbook. You can save to This PC, OneDrive, or another connected location.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Enter an <strong>appropriate filename</strong> that clearly describes the file's contents, then click <strong>Save</strong>.</div></div>
+      </div>
+      <h3>Save an existing workbook</h3>
+      <p>Once a workbook has been saved once, saving again is instant:</p>
+      <ul>
+        <li>Press <span class="kc">Ctrl+S</span> &mdash; saves immediately with no dialog</li>
+        <li>Go to <strong>File &gt; Save</strong></li>
+        <li>Click the <strong>Save</strong> button on the Quick Access Toolbar (the floppy disk icon)</li>
+      </ul>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">AutoSave</div>If your workbook is stored on OneDrive or SharePoint, <strong>AutoSave</strong> will appear in the top-left corner of Excel. When turned on, Excel saves your changes automatically every few seconds. This is one of the best reasons to store files in the cloud &mdash; you essentially never lose work.</div></div>
+      <div class="callout note"><span class="ci">&#128161;</span><div class="cb"><div class="ct">Did you know?</div>A workbook filename can contain up to <strong>218 characters</strong> total &mdash; but this includes the full file path (all the folder names). If your file is stored deep in nested folders, you have fewer characters available for the filename itself.</div></div>
+    </div></div>
+  </div>
+
+  <!-- S2: Save As and different formats -->
+  <div class="aitem" id="t2-ai1">
+    <button class="abtn" data-acc="t2" data-i="1"><div class="aicw"><div class="aic">&#128196;</div></div><div class="albl"><span class="anum">Section 02</span><span class="atitle">Save As and saving in different formats</span><span class="asub">New names, new locations, and file compatibility</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p><strong>Save As</strong> is used when you want to save the workbook with a <strong>new name</strong>, to a <strong>different location</strong>, or in a <strong>different file format</strong>. It creates a new file and leaves the original untouched.</p>
+      <h3>How to use Save As</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Go to <strong>File &gt; Save As</strong>, or press <span class="kc">F12</span>. The Save As screen opens in Backstage view.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Choose the <strong>location/folder</strong> to save in. Options include This PC, a recent folder, Browse (for the classic dialog), or an online location like OneDrive.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Enter the new <strong>filename</strong> if changing it.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">To save in a different format, click the <strong>Save as type</strong> dropdown and select the format you need.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body">Click <strong>Save</strong>.</div></div>
+      </div>
+      <h3>Common file formats</h3>
+      <table class="sc-table">
+        <thead><tr><th>Format</th><th>Extension</th><th>When to use it</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Excel Workbook</strong></td><td><span class="kc">.xlsx</span></td><td>Standard format for all modern Excel versions (2007 and later) &mdash; use this by default</td></tr>
+          <tr><td><strong>Excel 97-2003 Workbook</strong></td><td><span class="kc">.xls</span></td><td>Sharing with someone using an older version of Excel</td></tr>
+          <tr><td><strong>Excel Template</strong></td><td><span class="kc">.xltx</span></td><td>Creating a reusable template that others can fill in without overwriting the original</td></tr>
+          <tr><td><strong>CSV (Comma Separated)</strong></td><td><span class="kc">.csv</span></td><td>Exporting data to use in another application or database</td></tr>
+          <tr><td><strong>PDF</strong></td><td><span class="kc">.pdf</span></td><td>Sharing a read-only version that looks the same on any device (covered in Section 03)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><span class="ci">&#9888;</span><div class="cb"><div class="ct">Compatibility mode</div>When you open an older .xls file, Excel runs in <strong>Compatibility Mode</strong>, which disables newer features like modern chart types, sparklines, and slicers. You'll see "[Compatibility Mode]" in the title bar. Use <strong>File &gt; Convert</strong> to upgrade the file to the current format (covered in Section 04).</div></div>
+    </div></div>
+  </div>
+
+  <!-- S3: Save as PDF -->
+  <div class="aitem" id="t2-ai2">
+    <button class="abtn" data-acc="t2" data-i="2"><div class="aicw"><div class="aic">&#128247;</div></div><div class="albl"><span class="anum">Section 03</span><span class="atitle">Saving a workbook as a PDF</span><span class="asub">Creating a shareable, print-ready version of your data</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <p>A PDF is a fixed-format file that looks identical on any device and cannot be easily edited. Saving your workbook as a PDF is ideal when you want to share data in a professional, print-ready format without worrying about the recipient having Excel installed.</p>
+      <h3>Export to PDF using File &gt; Export</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Go to <strong>File &gt; Export</strong>, then click <strong>Create PDF/XPS</strong>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Check the <strong>location</strong> and edit the <strong>filename</strong> if needed.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Publish</strong>. Excel exports the currently active worksheets as a PDF file.</div></div>
+      </div>
+      <p>If you want more control over what gets exported, click <strong>Options</strong> before publishing. This lets you:</p>
+      <ul>
+        <li>Choose a specific page range to export</li>
+        <li>Choose whether to export the entire workbook or just the active sheets</li>
+        <li>Remove document properties (author name, etc.) for privacy</li>
+        <li>Ignore defined print areas if needed</li>
+      </ul>
+      <div class="callout tip"><span class="ci">&#9989;</span><div class="cb"><div class="ct">Alternative: Save As PDF</div>You can also go to <strong>File &gt; Save As</strong>, choose a location, and select <strong>PDF</strong> from the file type dropdown. This is a quick alternative that gives you slightly less control than the Export method but works well for simple single-sheet exports.</div></div>
+      <div class="callout fun"><span class="ci">&#11088;</span><div class="cb"><div class="ct">Cloud version history</div>If your workbook is saved to a cloud location like SharePoint or OneDrive and someone makes a mess of it, you can <strong>restore a previous version</strong> at any time. Go to File &gt; Info &gt; Version History to see and restore earlier versions. This is one of the most powerful reasons to work in the cloud.</div></div>
+    </div></div>
+  </div>
+
+  <!-- S4: Convert and quick reference -->
+  <div class="aitem" id="t2-ai3">
+    <button class="abtn" data-acc="t2" data-i="3"><div class="aicw"><div class="aic">&#128640;</div></div><div class="albl"><span class="anum">Section 04</span><span class="atitle">Converting to a newer format &amp; quick reference</span><span class="asub">Upgrading old workbooks and everything in one place</span><span class="aread-check">&#10003; Marked as read</span></div><div class="acw"><div class="achev">&#9660;</div></div></button>
+    <div class="abody"><div class="ain">
+      <h3>Convert a workbook to the current format</h3>
+      <p>When you open a workbook saved in the Excel 97-2003 format (.xls), Excel runs in <strong>Compatibility Mode</strong>. You'll see this in the title bar. In this mode, many modern Excel features are disabled or grayed out &mdash; including newer chart types, sparklines, slicers, and timeline features in PivotTables.</p>
+      <p>To upgrade an old workbook to the current format:</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Go to <strong>File &gt; Convert</strong>. A confirmation message will appear.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Click <strong>Yes</strong> to proceed. Excel converts the file to .xlsx format and closes the old file.</div></div>
+      </div>
+      <div class="callout warn"><span class="ci">&#9888;</span><div class="cb"><div class="ct">Before converting</div>Make sure the people you share the file with have a version of Excel that supports .xlsx (Excel 2007 or newer). If they're using a very old version, keep the .xls format. Conversion is a one-way process &mdash; the old .xls file will be replaced.</div></div>
+      <h3>Complete save reference</h3>
+      <table class="sc-table">
+        <thead><tr><th>Task</th><th>Fastest method</th><th>Alternative</th></tr></thead>
+        <tbody>
+          <tr><td>Save current file</td><td><span class="kc">Ctrl+S</span></td><td>File &gt; Save or Quick Access Toolbar</td></tr>
+          <tr><td>Save with new name or location</td><td><span class="kc">F12</span></td><td>File &gt; Save As</td></tr>
+          <tr><td>Save in a different format</td><td>File &gt; Save As &gt; change file type</td><td>Save As dialog &gt; Save as type dropdown</td></tr>
+          <tr><td>Export as PDF</td><td>File &gt; Export &gt; Create PDF/XPS</td><td>File &gt; Save As &gt; select PDF</td></tr>
+          <tr><td>Upgrade from .xls to .xlsx</td><td>File &gt; Convert &gt; Yes</td><td>Save As &gt; choose Excel Workbook</td></tr>
+          <tr><td>Save to OneDrive/SharePoint</td><td>File &gt; Save As &gt; choose online location</td><td>Turn on AutoSave if already in cloud</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+</div><!-- end t2 alist -->
+
+<!-- T2 QUIZ -->
+<div class="qwrap last locked" id="t2-qwrap">
+  <div class="qhdr"><div class="qhdr-ic">&#9997;</div><div class="qhdr-txt"><h2>Topic 2: Knowledge Check</h2><p id="t2-quiz-subhead">Complete all 4 sections above to unlock &nbsp;&middot;&nbsp; 5 questions &nbsp;&middot;&nbsp; Retake anytime</p></div></div>
+  <div class="qpbar" id="t2-qpb" style="width:0%"></div>
+  <div class="qbody" id="t2-qbody">
+    <div class="qctr" id="t2-qctr">Question 1 of 5</div>
+    <div class="qtxt" id="t2-qtxt"></div>
+    <div class="opts" id="t2-opts"></div>
+    <div class="fb" id="t2-fb"><span class="fbi" id="t2-fbi"></span><div class="fbm"><div class="fbt" id="t2-fbt"></div><div id="t2-fbb"></div></div></div>
+    <div class="qnav"><button class="nbtn" id="t2-nbtn">Next question &rarr;</button></div>
+  </div>
+  <div class="sscreen" id="t2-sscr">
+    <div class="scirc"><div class="snum" id="t2-snum">0</div><div class="sdenom">out of 5</div></div>
+    <div class="stitle" id="t2-stitle"></div><div class="ssub" id="t2-ssub"></div>
+    <div class="sbd" id="t2-sbd"></div>
+    <button class="rbtn" id="t2-rbtn">&#8635; Try again</button>
+  </div>
+</div>
+</div><!-- end topic2 -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="flogo">X</div>
+  <span class="ftxt"><strong>Business Excel</strong> &nbsp;&middot;&nbsp; Module 1 &nbsp;&middot;&nbsp; Lesson 2: Excel Fundamentals</span>
+</div>
+
+</div><!-- end page -->
+</div><!-- end content-area -->
+</div><!-- end app-shell -->
+
+<script>
+(function(){
+  // ── Video lightbox ──
+  window.openVideoLightbox = function(){
+    var fr = document.getElementById('lb-iframe');
+    var lb = document.getElementById('video-lightbox');
+    if(fr) fr.src = 'https://www.youtube-nocookie.com/embed/placeholder?autoplay=1&rel=0';
+    if(lb){ lb.style.display='flex'; document.body.style.overflow='hidden'; }
+  };
+  window.closeVideoLightbox = function(){
+    var fr = document.getElementById('lb-iframe');
+    var lb = document.getElementById('video-lightbox');
+    if(fr) fr.src = '';
+    if(lb){ lb.style.display='none'; document.body.style.overflow=''; }
+  };
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeVideoLightbox(); });
+
+  // ── Auto-resize iframe ──
+  function sendH(){var h=document.body.scrollHeight;if(window.parent&&window.parent!==window){window.parent.postMessage({iframeHeight:h},'*');}}
+  window.addEventListener('load',sendH);window.addEventListener('resize',sendH);
+  new MutationObserver(sendH).observe(document.body,{childList:true,subtree:true,attributes:true});
+
+  // ── Confetti ──
+  function launchConfetti(){
+    var c=document.getElementById('confetti-container');
+    c.innerHTML='';c.className='confetti-container active';
+    var colors=['#33c481','#107c41','#185c37','#21a366','#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7'];
+    for(var i=0;i<120;i++){
+      var p=document.createElement('div');p.className='confetti-piece';
+      var size=Math.random()*10+6;var isCircle=Math.random()>0.5;
+      p.style.cssText=['left:'+Math.random()*100+'%','width:'+size+'px','height:'+size+'px',
+        'background:'+colors[Math.floor(Math.random()*colors.length)],
+        'border-radius:'+(isCircle?'50%':'2px'),
+        'animation-duration:'+(Math.random()*2+2)+'s',
+        'animation-delay:'+Math.random()*1.5+'s','opacity:0'].join(';');
+      c.appendChild(p);
+    }
+    setTimeout(function(){c.className='confetti-container';c.innerHTML='';},5000);
+  }
+
+  // ── Sidebar toggle ──
+  window.toggleSidebar = function(){
+    var sb = document.getElementById('sidebar');
+    if(!sb) return;
+    sb.classList.toggle('collapsed');
+    try{ localStorage.setItem('sb_collapsed', sb.classList.contains('collapsed') ? '1' : '0'); }catch(e){}
+    setTimeout(sendH, 350);
+  };
+  try{
+    if(localStorage.getItem('sb_collapsed')==='1'){
+      var sb0 = document.getElementById('sidebar');
+      if(sb0) sb0.classList.add('collapsed');
+    }
+  }catch(e){}
+
+  window.scrollToAnchor = function(id){
+    var el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  };
+
+  // ── Sidebar navigation helpers ──
+  window.scrollToSection = function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+    if(el.classList.contains('aitem')){
+      var btn = el.querySelector('.abtn');
+      if(btn && !el.classList.contains('open')) btn.click();
+    }
+  };
+
+  // ── Sidebar state ──
+  var sbState = {t1:{total:4, readKeys:{}, quizUnlocked:false}, t2:{total:4, readKeys:{}, quizUnlocked:false}};
+  function updateSidebar(){
+    var totalSections = 8;
+    var totalRead = 0;
+    var prefixes = ['t1','t2'];
+    for(var pi=0;pi<prefixes.length;pi++){
+      var p = prefixes[pi];
+      var s = sbState[p];
+      var readCount = Object.keys(s.readKeys).length;
+      totalRead += readCount;
+      for(var i=0; i<s.total; i++){
+        var sb = document.getElementById('sb-'+p+'-s'+i);
+        if(sb){ sb.className = s.readKeys[i] ? 'sb-section read' : 'sb-section'; }
+      }
+      var topicCheck = document.getElementById('sb-'+p+'-check');
+      if(topicCheck){ topicCheck.className = readCount===s.total ? 'sb-topic-check show' : 'sb-topic-check'; }
+      var qrow = document.getElementById('sb-'+p+'-quiz');
+      var qlbl = document.getElementById('sb-'+p+'-quiz-lbl');
+      if(qrow && qlbl && s.quizUnlocked){
+        qrow.className='sb-quiz unlocked';
+        var qi = qrow.querySelector('.sb-quiz-icon');
+        if(qi) qi.innerHTML='&#9997;';
+        qlbl.innerHTML='Knowledge check';
+      }
+    }
+    var pct = Math.round(totalRead/totalSections*100);
+    var fill = document.getElementById('sb-overall-fill');
+    var pctEl = document.getElementById('sb-overall-pct');
+    if(fill) fill.style.width=pct+'%';
+    if(pctEl) pctEl.innerHTML=pct+'%';
+  }
+
+  // ── Accordion factory ──
+  function makeAcc(prefix, total, quizId){
+    var op={}, read={};
+    function openI(i){
+      var e=document.getElementById(prefix+'-ai'+i);
+      e.querySelector('.abody').style.display='block';
+      read[i]=true; e.className='aitem open read';
+      op[i]=true; upP(); sendH();
+    }
+    function closeI(i){
+      var e=document.getElementById(prefix+'-ai'+i);
+      e.querySelector('.abody').style.display='none';
+      read[i]=true; e.className='aitem read';
+      delete op[i]; upP(); sendH();
+    }
+    function upP(){
+      var n=Object.keys(read).length, p=Math.round(n/total*100);
+      document.getElementById(prefix+'-pfill').style.width=p+'%';
+      document.getElementById(prefix+'-ptxt').innerHTML=n+' of '+total+' sections read';
+      document.getElementById(prefix+'-ppct').innerHTML=p+'%';
+      var b=document.getElementById(prefix+'-dbadge');
+      b.className=n===total?'dbadge show':'dbadge';
+      var qw=document.getElementById(quizId);
+      var lm=document.getElementById(prefix+'-lock-msg');
+      if(n===total){
+        // T1 quiz unlock is handled by tryUnlockT1Quiz (requires sim too)
+        if(prefix==='t1'){
+          if(window.tryUnlockT1Quiz) window.tryUnlockT1Quiz();
+        } else {
+          qw.className=qw.className.replace(' locked','').replace('locked','');
+          if(lm) lm.className='quiz-locked-msg hidden';
+          var qs=document.getElementById(prefix+'-quiz-subhead');
+          if(qs) qs.innerHTML='5 questions &nbsp;&middot;&nbsp; Instant feedback &nbsp;&middot;&nbsp; Retake anytime';
+        }
+      }
+    }
+    var bs=document.querySelectorAll('[data-acc="'+prefix+'"]');
+    for(var t=0;t<bs.length;t++){
+      (function(b){b.addEventListener('click',function(){var i=parseInt(b.getAttribute('data-i'),10);op[i]?closeI(i):openI(i);});})(bs[t]);
+    }
+    document.getElementById(prefix+'-bex').addEventListener('click',function(){for(var i=0;i<total;i++){if(!op[i])openI(i);}});
+    document.getElementById(prefix+'-bcl').addEventListener('click',function(){for(var i=0;i<total;i++){if(op[i])closeI(i);}});
+  }
+  makeAcc('t1',4,'t1-qwrap');
+  makeAcc('t2',4,'t2-qwrap');
+
+  // ── Override T1 unlock to also require sim completion ──
+  var _t1SimDone = false;
+  window._notifySimComplete = function(){
+    _t1SimDone = true;
+    tryUnlockT1Quiz();
+  };
+  window.tryUnlockT1Quiz = function tryUnlockT1Quiz(){
+    // Only unlock if BOTH all 4 sections read AND sim complete
+    var qw = document.getElementById('t1-qwrap');
+    var lm = document.getElementById('t1-lock-msg');
+    var qs = document.getElementById('t1-quiz-subhead');
+    if(!qw) return;
+    var allRead = document.querySelectorAll('#t1-ai0.read, #t1-ai1.read, #t1-ai2.read, #t1-ai3.read').length === 4;
+    if(allRead && _t1SimDone){
+      qw.className = qw.className.replace(' locked','').replace('locked','').trim();
+      if(lm) lm.className = 'quiz-locked-msg hidden';
+      if(qs) qs.innerHTML = '5 questions &nbsp;&middot;&nbsp; Instant feedback &nbsp;&middot;&nbsp; Retake anytime';
+    } else if(allRead && !_t1SimDone){
+      if(lm){ lm.className = 'quiz-locked-msg'; lm.innerHTML = '&#9997; Complete the simulation above to unlock the quiz'; }
+    }
+  }
+  // Watch T1 accordion items for read state changes
+  var t1WatchIds = ['t1-ai0','t1-ai1','t1-ai2','t1-ai3'];
+  for(var wi=0; wi<t1WatchIds.length; wi++){
+    (function(wid){
+      var el = document.getElementById(wid);
+      if(!el) return;
+      new MutationObserver(function(){ if(window.tryUnlockT1Quiz) window.tryUnlockT1Quiz(); }).observe(el,{attributes:true,attributeFilter:['class']});
+    })(t1WatchIds[wi]);
+  }
+
+  // ── Patch for sidebar ──
+  function patchAccForSidebar(prefix, total){
+    for(var i=0;i<total;i++){
+      (function(idx){
+        var el = document.getElementById(prefix+'-ai'+idx);
+        if(!el) return;
+        new MutationObserver(function(){
+          if(el.classList.contains('read')){
+            sbState[prefix].readKeys[idx] = true;
+            updateSidebar();
+          }
+        }).observe(el, {attributes:true, attributeFilter:['class']});
+      })(i);
+    }
+    var qw = document.getElementById(prefix+'-qwrap');
+    if(qw){
+      new MutationObserver(function(){
+        if(!qw.classList.contains('locked')){
+          sbState[prefix].quizUnlocked = true;
+          updateSidebar();
+        }
+      }).observe(qw, {attributes:true, attributeFilter:['class']});
+    }
+  }
+  patchAccForSidebar('t1',4);
+  patchAccForSidebar('t2',4);
+  updateSidebar();
+
+  // Scroll highlight
+  window.addEventListener('scroll', function(){
+    var sections = ['t1-ai0','t1-ai1','t1-ai2','t1-ai3','t2-ai0','t2-ai1','t2-ai2','t2-ai3'];
+    var map = {
+      't1-ai0':'sb-t1-s0','t1-ai1':'sb-t1-s1','t1-ai2':'sb-t1-s2','t1-ai3':'sb-t1-s3',
+      't2-ai0':'sb-t2-s0','t2-ai1':'sb-t2-s1','t2-ai2':'sb-t2-s2','t2-ai3':'sb-t2-s3'
+    };
+    var best = null, bestTop = -Infinity;
+    for(var si=0;si<sections.length;si++){
+      var scEl = document.getElementById(sections[si]);
+      if(!scEl) continue;
+      var scTop = scEl.getBoundingClientRect().top;
+      if(scTop <= 80 && scTop > bestTop){ bestTop=scTop; best=sections[si]; }
+    }
+    for(var sj=0;sj<sections.length;sj++){
+      var sbEl = document.getElementById(map[sections[sj]]);
+      if(!sbEl) continue;
+      var isRead = sbEl.classList.contains('read');
+      sbEl.className = 'sb-section' + (isRead?' read':'') + (sections[sj]===best?' active':'');
+    }
+  }, {passive:true});
+
+  // ── Score messages ──
+  var SCORE_MSGS = {
+    titles:['Keep reviewing!','Good effort!','Nice work!','So close!','So close!','Perfect score! &#127881;'],
+    subs:[
+      "Don't get discouraged &mdash; review the sections above and try again. You've got this!",
+      "A few gaps to fill. Re-read the sections and give it another go.",
+      "Solid understanding! One more pass through the material and you'll have it locked in.",
+      "Really strong work! Just two questions slipped. Review and try once more.",
+      "So close! Just one question away from perfect. Take another look and go for it!",
+      "Outstanding! You answered every question correctly. You&rsquo;ve mastered this topic!"
+    ]
+  };
+
+  // ── Quiz factory ──
+  function makeQuiz(prefix, QS){
+    var L=['A','B','C','D'], cur=0, score=0, ans=[];
+    function rQ(){
+      var q=QS[cur];
+      document.getElementById(prefix+'-qctr').innerHTML='Question '+(cur+1)+' of '+QS.length;
+      document.getElementById(prefix+'-qtxt').innerHTML=q.q;
+      document.getElementById(prefix+'-qpb').style.width=(cur/QS.length*100)+'%';
+      var fb=document.getElementById(prefix+'-fb');fb.className='fb';fb.style.display='none';
+      var nb=document.getElementById(prefix+'-nbtn');nb.className='nbtn';
+      nb.innerHTML=cur<QS.length-1?'Next question &rarr;':'See my results';
+      var opts=document.getElementById(prefix+'-opts');opts.innerHTML='';
+      for(var i=0;i<q.o.length;i++){
+        var btn=document.createElement('button');btn.className='obtn';btn.setAttribute('data-o',i);
+        btn.innerHTML='<span class="oltr">'+L[i]+'</span><span>'+q.o[i]+'</span>';
+        btn.addEventListener('click',selA);opts.appendChild(btn);
+      }
+      sendH();
+    }
+    function selA(){
+      var sel=parseInt(this.getAttribute('data-o'),10),q=QS[cur];
+      var all=document.querySelectorAll('#'+prefix+'-opts .obtn');
+      for(var i=0;i<all.length;i++) all[i].disabled=true;
+      ans[cur]=sel; var ok=sel===q.c; if(ok) score++;
+      for(var j=0;j<all.length;j++){
+        var idx=parseInt(all[j].getAttribute('data-o'),10);
+        if(idx===q.c) all[j].className='obtn correct';
+        else if(idx===sel&&!ok) all[j].className='obtn wrong';
+      }
+      var fb=document.getElementById(prefix+'-fb');
+      document.getElementById(prefix+'-fbi').innerHTML=ok?'&#9989;':'&#10060;';
+      document.getElementById(prefix+'-fbt').innerHTML=ok?'Correct!':'Not quite';
+      document.getElementById(prefix+'-fbb').innerHTML=ok?q.r:q.w;
+      fb.className='fb show '+(ok?'fbc':'fbw');fb.style.display='flex';
+      document.getElementById(prefix+'-nbtn').className='nbtn show';
+      sendH();
+    }
+    document.getElementById(prefix+'-nbtn').addEventListener('click',function(){
+      cur++; if(cur<QS.length){rQ();}else{showS();}
+    });
+    function showS(){
+      document.getElementById(prefix+'-qbody').style.display='none';
+      document.getElementById(prefix+'-qpb').style.width='100%';
+      var ss=document.getElementById(prefix+'-sscr');ss.className='sscreen show';
+      document.getElementById(prefix+'-snum').innerHTML=score;
+      document.getElementById(prefix+'-stitle').innerHTML=SCORE_MSGS.titles[score];
+      document.getElementById(prefix+'-ssub').innerHTML=SCORE_MSGS.subs[score];
+      if(score===5) launchConfetti();
+      var bd=document.getElementById(prefix+'-sbd');bd.innerHTML='';
+      for(var i=0;i<QS.length;i++){
+        var ok=ans[i]===QS[i].c;
+        var d=document.createElement('div');d.className='sbi';
+        d.innerHTML='<span class="sbic">'+(ok?'&#9989;':'&#10060;')+'</span><div class="sbq"><strong>Q'+(i+1)+': '+QS[i].q+'</strong>'+(ok?'Correct: '+QS[i].o[QS[i].c]:'Your answer: '+QS[i].o[ans[i]]+'<br>Correct answer: '+QS[i].o[QS[i].c])+'</div>';
+        bd.appendChild(d);
+      }
+      sendH();
+    }
+    document.getElementById(prefix+'-rbtn').addEventListener('click',function(){
+      cur=0;score=0;ans=[];
+      document.getElementById(prefix+'-sscr').className='sscreen';
+      document.getElementById(prefix+'-qbody').style.display='block';
+      rQ();
+    });
+    rQ();
+  }
+
+  // ── PRACTICE GRID ──
+  (function(){
+    var ROWS=8, COLS=5;
+    var colLetters=['A','B','C','D','E'];
+    var gridData={};
+    var selRow=0, selCol=0;
+    var isEditing=false;
+    var tabOriginCol=0; // column where Tab sequence started from
+    // task states
+    var tasks=[false,false,false,false,false,false];
+    // task 1 = Tab pressed from A1; track separately
+    var tabPressedFromA1=false;
+
+    function cellKey(r,c){ return r+','+c; }
+
+    function buildGrid(){
+      var container=document.getElementById('xl-rows');
+      if(!container) return;
+      container.innerHTML='';
+      for(var r=0;r<ROWS;r++){
+        var row=document.createElement('div');
+        row.className='xl-row';
+        var rh=document.createElement('div');
+        rh.className='xl-row-hdr';
+        rh.id='xl-rh-'+r;
+        rh.textContent=r+1;
+        row.appendChild(rh);
+        for(var c=0;c<COLS;c++){
+          var cell=document.createElement('div');
+          cell.className='xl-cell';
+          cell.id='xl-cell-'+r+'-'+c;
+          cell.setAttribute('data-r',r);
+          cell.setAttribute('data-c',c);
+          var span=document.createElement('span');
+          span.className='xl-cell-text';
+          cell.appendChild(span);
+          (function(rr,cc){
+            cell.addEventListener('mousedown',function(e){
+              e.preventDefault();
+              if(isEditing) commitEdit();
+              selectCell(rr,cc);
+              window._gridActive=true;
+            });
+            cell.addEventListener('dblclick',function(e){
+              e.preventDefault();
+              window._gridActive=true;
+              selectCell(rr,cc);
+              startEdit(true); // edit at end
+              // Task 4: double-click A1 to edit
+              if(rr===0&&cc===0&&(gridData['0,0']||'')!==''){
+                markTask(4);
+                setHint('Edit mode! Use arrow keys to position your cursor inside the text, then make a change and press <kbd>Enter</kbd>.');
+              }
+            });
+          })(r,c);
+          row.appendChild(cell);
+        }
+        container.appendChild(row);
+      }
+      renderGrid();
+      selectCell(0,0);
+    }
+
+    function renderGrid(){
+      for(var r=0;r<ROWS;r++){
+        for(var c=0;c<COLS;c++){
+          var cell=document.getElementById('xl-cell-'+r+'-'+c);
+          if(!cell) continue;
+          var val=gridData[cellKey(r,c)]||'';
+          var span=cell.querySelector('.xl-cell-text');
+          if(span) span.textContent=val;
+          var isNum=val!==''&&!isNaN(val)&&val.trim()!=='';
+          cell.className='xl-cell'+(isNum?' has-number':'')+
+            (r===selRow&&c===selCol?' selected':'')+
+            (r===selRow&&c===selCol&&isEditing?' editing':'');
+        }
+        var rh=document.getElementById('xl-rh-'+r);
+        if(rh) rh.className='xl-row-hdr'+(r===selRow?' sel-row':'');
+      }
+      for(var c=0;c<COLS;c++){
+        var ch=document.getElementById('xlch-'+c);
+        if(ch) ch.className='xl-col-hdr'+(c===selCol?' sel-col':'');
+      }
+      var nb=document.getElementById('xl-namebox');
+      if(nb) nb.textContent=colLetters[selCol]+(selRow+1);
+      var fv=document.getElementById('xl-formulaval');
+      if(fv) fv.textContent=gridData[cellKey(selRow,selCol)]||'';
+    }
+
+    function selectCell(r,c){
+      if(r<0||r>=ROWS||c<0||c>=COLS) return;
+      selRow=r; selCol=c; isEditing=false;
+      renderGrid();
+    }
+
+    function startEdit(atEnd){
+      isEditing=true;
+      var cell=document.getElementById('xl-cell-'+selRow+'-'+selCol);
+      if(!cell) return;
+      var old=cell.querySelector('input');
+      if(old) cell.removeChild(old);
+      var span=cell.querySelector('.xl-cell-text');
+      if(span) span.style.display='none';
+      var input=document.createElement('input');
+      input.className='xl-input';
+      input.value=gridData[cellKey(selRow,selCol)]||'';
+      cell.appendChild(input);
+      cell.className='xl-cell selected editing';
+      input.focus();
+      if(atEnd){ input.selectionStart=input.selectionEnd=input.value.length; }
+      else { input.select(); }
+      input.addEventListener('input',function(){
+        var fv=document.getElementById('xl-formulaval');
+        if(fv) fv.textContent=input.value;
+      });
+      input.addEventListener('keydown',function(e){
+        if(e.key==='Enter'){
+          e.preventDefault();
+          var val=input.value;
+          var wasRow=selRow, wasCol=selCol;
+          commitEdit();
+          // After Tab sequence from col 0, Enter jumps back to col 0, next row
+          var nextRow=wasRow+1;
+          var nextCol=tabOriginCol; // go back to where tab sequence started
+          selectCell(Math.min(nextRow,ROWS-1), nextCol);
+          renderGrid();
+          // Task 3: Enter was pressed and cursor moved to A2 (row 1, col 0)
+          // specifically when coming from B1 after Tab from A1
+          if(wasRow===0&&tabPressedFromA1){
+            markTask(3);
+            setHint('Cursor jumped to A2! This is the Tab+Enter workflow &mdash; Tab across a row, then Enter jumps back to column A on the next row.');
+          }
+          // Task 0: first name typed in A1
+          if(wasRow===0&&wasCol===0&&val.trim()!==''&&isNaN(val)){
+            markTask(0);
+            setHint('First name entered in A1! Now press <kbd>Tab</kbd> to move to B1 and type your last name.');
+          }
+          checkAllDone();
+        } else if(e.key==='Tab'){
+          e.preventDefault();
+          var val2=input.value;
+          var fromRow=selRow, fromCol=selCol;
+          if(fromCol===0) tabOriginCol=0; // remember we started at col 0
+          commitEdit();
+          // Task 0: first name entered in A1 via Tab
+          if(fromRow===0&&fromCol===0&&val2.trim()!==''&&isNaN(val2)){
+            markTask(0);
+          }
+          // Task 1: Tab pressed from A1
+          if(fromRow===0&&fromCol===0){
+            tabPressedFromA1=true;
+            markTask(1);
+            setHint('Cursor moved to B1! Now type your last name and press <kbd>Enter</kbd>.');
+          }
+          // Task 2: last name entered in B1 via Tab or other
+          if(fromRow===0&&fromCol===1&&val2.trim()!==''){
+            markTask(2);
+            setHint('Last name entered in B1! Now press <kbd>Enter</kbd> to confirm and see where the cursor lands.');
+          }
+          var nextC=e.shiftKey ? Math.max(0,selCol-1) : Math.min(COLS-1,selCol+1);
+          selectCell(selRow, nextC);
+          checkAllDone();
+        } else if(e.key==='Escape'){
+          e.preventDefault();
+          cancelEdit();
+          setHint('<kbd>Esc</kbd> cancelled the entry &mdash; original content restored.');
+        }
+      });
+    }
+
+    function commitEdit(){
+      if(!isEditing) return;
+      var cell=document.getElementById('xl-cell-'+selRow+'-'+selCol);
+      var input=cell?cell.querySelector('input'):null;
+      var val=input?input.value:'';
+      if(input) cell.removeChild(input);
+      var span=cell?cell.querySelector('.xl-cell-text'):null;
+      if(span) span.style.display='';
+      gridData[cellKey(selRow,selCol)]=val;
+      isEditing=false;
+      renderGrid();
+      // Task 2: last name in B1 committed
+      if(selRow===0&&selCol===1&&val.trim()!==''){
+        markTask(2);
+      }
+    }
+
+    function cancelEdit(){
+      if(!isEditing) return;
+      var cell=document.getElementById('xl-cell-'+selRow+'-'+selCol);
+      var input=cell?cell.querySelector('input'):null;
+      if(input) cell.removeChild(input);
+      var span=cell?cell.querySelector('.xl-cell-text'):null;
+      if(span) span.style.display='';
+      isEditing=false;
+      renderGrid();
+    }
+
+    function markTask(n){
+      if(tasks[n]) return;
+      tasks[n]=true;
+      var task=document.getElementById('task-'+n);
+      var dot=document.getElementById('tdot-'+n);
+      if(task) task.className='tryit-task done';
+      if(dot)  dot.innerHTML='&#10003;';
+      checkAllDone();
+    }
+
+    function checkAllDone(){
+      if(tasks[0]&&tasks[1]&&tasks[2]&&tasks[3]&&tasks[4]&&tasks[5]){
+        var comp=document.getElementById('tryit-complete');
+        if(comp) comp.style.display='flex';
+        launchConfetti();
+        setHint('&#127881; All 6 tasks complete! Great work practicing the core data entry workflow. Reset anytime to try again.');
+        // Notify quiz unlock logic
+        if(window._notifySimComplete) window._notifySimComplete();
+      }
+    }
+
+    function setHint(msg){
+      var el=document.getElementById('xl-hint-text');
+      if(el) el.innerHTML=msg;
+    }
+
+    // Global keydown for navigation when not editing
+    document.addEventListener('keydown',function(e){
+      var active=document.activeElement;
+      var inGridInput=active&&active.classList&&active.classList.contains('xl-input');
+      if(inGridInput) return;
+      if(!window._gridActive) return;
+      if(isEditing) return;
+
+      if(e.key==='Delete'){
+        e.preventDefault();
+        var had=gridData[cellKey(selRow,selCol)]||'';
+        gridData[cellKey(selRow,selCol)]='';
+        renderGrid();
+        // Task 5: Delete used on B1
+        if(selRow===0&&selCol===1&&had!==''){
+          markTask(5);
+          setHint('B1 cleared with <kbd>Delete</kbd>! The cell itself stays &mdash; only the contents are removed. This is different from the context menu Delete which removes the whole cell.');
+        } else if(had){
+          setHint('Cell cleared! <kbd>Delete</kbd> removes contents but keeps the cell in place.');
+        }
+      } else if(e.key==='F2'){
+        e.preventDefault();
+        startEdit(true);
+        if(selRow===0&&selCol===0){
+          markTask(4);
+          setHint('<kbd>F2</kbd> entered edit mode at the end of the text. Reposition with arrow keys, edit, then press <kbd>Enter</kbd>.');
+        }
+      } else if(e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowRight'){
+        e.preventDefault();
+        if(e.key==='ArrowUp')    selRow=Math.max(0,selRow-1);
+        if(e.key==='ArrowDown')  selRow=Math.min(ROWS-1,selRow+1);
+        if(e.key==='ArrowLeft')  selCol=Math.max(0,selCol-1);
+        if(e.key==='ArrowRight') selCol=Math.min(COLS-1,selCol+1);
+        selectCell(selRow,selCol);
+      } else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){
+        e.preventDefault();
+        startEdit(false);
+        var inp=document.querySelector('#xl-cell-'+selRow+'-'+selCol+' input');
+        if(inp){
+          inp.value=e.key;
+          inp.selectionStart=inp.selectionEnd=1;
+          var fv=document.getElementById('xl-formulaval');
+          if(fv) fv.textContent=e.key;
+        }
+      }
+    });
+
+    window.resetPractice=function(){
+      gridData={};
+      tasks=[false,false,false,false,false,false];
+      tabPressedFromA1=false;
+      tabOriginCol=0;
+      isEditing=false;
+      selRow=0;selCol=0;
+      window._gridActive=false;
+      for(var i=0;i<6;i++){
+        var t=document.getElementById('task-'+i);
+        var d=document.getElementById('tdot-'+i);
+        if(t) t.className='tryit-task';
+        if(d) d.innerHTML='&#9675;';
+      }
+      var comp=document.getElementById('tryit-complete');
+      if(comp) comp.style.display='none';
+      setHint('Grid reset! Click <strong>A1</strong> to start, then type your first name.');
+      buildGrid();
+    };
+
+    buildGrid();
+  })();
+
+    // TOPIC 1 QUIZ — Enter and edit data
+  makeQuiz('t1',[
+    {q:"You have just finished typing data into a cell. Which key moves your cursor to the cell directly below?",
+     o:["Tab","Shift+Tab","Enter","Esc"],
+     c:2,
+     r:"Pressing Enter completes the data entry and moves the cursor down to the next row. This is the most common way to move after entering data.",
+     w:"Enter is the key that moves you to the row below after completing a cell entry. Tab moves right, and Shift+Tab moves left."},
+    {q:"What is the fastest way to cancel a cell entry you are currently typing and restore the original cell content?",
+     o:["Press Delete","Press Ctrl+Z","Press Esc","Click another cell"],
+     c:2,
+     r:"Pressing Esc before completing an entry cancels it and restores the original cell content. The Cancel button (X) in the formula bar does the same thing.",
+     w:"Esc cancels a cell entry before it is completed. Ctrl+Z is Undo (which works after the fact), and clicking another cell actually completes the entry first."},
+    {q:"You want to edit the contents of a cell at a specific position within the text. What is the best approach?",
+     o:["Press Delete and retype the whole cell","Click the cell once and start typing","Double-click the cell or press F2 to enter edit mode","Press Ctrl+Enter"],
+     c:2,
+     r:"Double-clicking a cell or pressing F2 enters edit mode, placing your cursor precisely inside the cell so you can edit at a specific position without overwriting the whole entry.",
+     w:"Double-clicking or pressing F2 enters edit mode at a specific position. Clicking once and typing immediately replaces the entire cell contents."},
+    {q:"What happens if you select Delete from the right-click context menu instead of pressing the Delete key on your keyboard?",
+     o:["Both do exactly the same thing","The context menu Delete removes cell content only","The context menu Delete shifts surrounding data into the deleted cells","The context menu Delete permanently removes the file"],
+     c:2,
+     r:"Selecting Delete from the context menu tells Excel to delete the cell(s) entirely and shift surrounding data to fill the gap — which can disrupt your data layout unexpectedly. The keyboard Delete key only clears the cell contents.",
+     w:"The context menu Delete is different from the keyboard Delete key. The context menu version removes the cells and shifts surrounding data, which can disrupt your worksheet layout."},
+    {q:"You made a mistake 10 actions ago but you have since saved the file. Can you still undo that action?",
+     o:["No — saving the file clears the undo history","No — you can only undo the last 3 actions","Yes — Excel keeps up to 100 undo actions even after saving","Yes — but only if AutoSave is turned off"],
+     c:2,
+     r:"Excel keeps up to 100 undo actions in memory, even after a file has been saved. You can use Ctrl+Z or the Undo button to step back through them.",
+     w:"Excel actually keeps up to 100 undo steps even after saving. Saving does not clear the undo history, so you can still use Ctrl+Z to undo earlier actions."}
+  ]);
+
+  // TOPIC 2 QUIZ — Save workbooks
+  makeQuiz('t2',[
+    {q:"What is the keyboard shortcut to save an existing workbook quickly without opening any dialog box?",
+     o:["Ctrl+S","Ctrl+Shift+S","F12","Ctrl+P"],
+     c:0,
+     r:"Ctrl+S saves the current workbook instantly. If the file has been saved before, it saves in place with no dialog. It works across all Microsoft Office applications too.",
+     w:"Ctrl+S is the shortcut to save quickly. F12 opens the Save As dialog, and Ctrl+P opens Print."},
+    {q:"You want to save your workbook with a new name in a different folder. Which command should you use?",
+     o:["File > Save (Ctrl+S)","File > Save As (F12)","File > Export","File > Convert"],
+     c:1,
+     r:"Save As (F12 or File > Save As) lets you choose a new filename and/or a different save location. It leaves the original file untouched and creates a new copy.",
+     w:"Save As is the correct command. Ctrl+S saves to the same location with the same name. F12 is the shortcut that opens Save As directly."},
+    {q:"A student wants to share their workbook with a colleague who uses Excel 2003. What should they do?",
+     o:["Save normally with Ctrl+S","Save as a PDF","Save as Excel 97-2003 Workbook format using Save As","Use File > Convert"],
+     c:2,
+     r:"Saving as an Excel 97-2003 Workbook (.xls format) ensures compatibility with older versions of Excel. This is done through File > Save As and selecting the older format from the file type dropdown.",
+     w:"To share with someone using an older version of Excel, you need to save in the Excel 97-2003 format using Save As. File > Convert actually upgrades an old file to the newest format, not the other way around."},
+    {q:"What is the maximum number of characters allowed in an Excel workbook filename (including the file path)?",
+     o:["64 characters","128 characters","218 characters","256 characters"],
+     c:2,
+     r:"Excel allows up to 218 characters for a workbook filename, and this total includes the full file path (all the folder names). If your folders have long names, you have fewer characters available for the filename itself.",
+     w:"The limit is 218 characters total — and importantly, this includes the entire file path, not just the filename. Deep folder structures eat into that limit."},
+    {q:"How do you export a workbook as a PDF in Excel?",
+     o:["File > Save As > change type to PDF","File > Print > Save as PDF","File > Export > Create PDF/XPS, then select Publish","Right-click the file > Convert to PDF"],
+     c:2,
+     r:"The correct path is File > Export > Create PDF/XPS. From there you set the filename and location, then click Publish to export the active worksheets as a PDF.",
+     w:"The PDF export path is File > Export > Create PDF/XPS, then Publish. While Save As can also save as PDF in some versions, the Export method is the primary and most reliable approach."}
+  ]);
+
+})();
+</script>
+</body>
+</html>
